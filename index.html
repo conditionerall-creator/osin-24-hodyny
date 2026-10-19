@@ -1,0 +1,987 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>24 години всередині осені — наукова конференція</title>
+<meta name="description" content="Сайт-презентація дитячої наукової конференції «24 години всередині осені»: одна осіння доба від 06:00 до 00:00.">
+<style>
+@property --s1 { syntax: '<color>'; inherits: true; initial-value: #3B2141; }
+@property --s2 { syntax: '<color>'; inherits: true; initial-value: #A6453A; }
+@property --s3 { syntax: '<color>'; inherits: true; initial-value: #E9A44A; }
+:root{
+  --ochre:#B97A16; --terra:#B4502C; --amber:#E39B2D; --bordo:#6E1F2A; --olive:#5E6B34; --water:#1F5C9E; --plum:#6F3A8A; --night:#25203A;
+  --cream:#FBF3E4; --paper:#F6EAD3; --ink:#2B1A12; --ink2:#5A4335;
+  --serif: Georgia, "Times New Roman", serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --fs-h: clamp(44px, 3.3vw, 66px);
+  --fs-b: clamp(24px, 1.55vw, 32px);
+  --fs-s: clamp(16px, 1vw, 19px);
+  --bar: 64px;
+  --ease: cubic-bezier(.22,.8,.24,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#2b1a24;color:var(--ink);font-family:var(--sans);overflow:hidden}
+body{font-size:var(--fs-b);line-height:1.3}
+img{max-width:100%;display:block}
+button{font:inherit;color:inherit}
+:focus-visible{outline:4px solid #FFD27A;outline-offset:3px;border-radius:8px}
+
+/* ---------- живий фон ---------- */
+.sky{position:fixed;inset:0;z-index:0;background:linear-gradient(180deg,var(--s1) 0%,var(--s2) 55%,var(--s3) 100%);transition:--s1 1.6s ease,--s2 1.6s ease,--s3 1.6s ease}
+.sky::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 70% at 50% 110%,rgba(255,214,140,.35),transparent 60%)}
+.orb{position:fixed;z-index:0;width:11vmin;height:11vmin;border-radius:50%;left:var(--ox,70%);top:var(--oy,22%);background:radial-gradient(circle at 40% 40%,#FFF1BF,#F7C55A 60%,#EBA13A);box-shadow:0 0 6vmin 2vmin rgba(255,206,110,.45);transition:left 1.6s var(--ease),top 1.6s var(--ease),opacity 1s,background 1s,box-shadow 1s;opacity:var(--oo,1)}
+.orb.moon{background:radial-gradient(circle at 60% 40%,#FFF8E2,#E9E1C5 70%);box-shadow:0 0 5vmin 1vmin rgba(255,248,220,.25)}
+.trees{position:fixed;left:0;right:0;bottom:0;height:34vh;z-index:1;pointer-events:none}
+.trees svg{position:absolute;bottom:0;left:0;width:300vw;height:100%;transition:transform 1.4s var(--ease)}
+.trees .far{opacity:.28}
+.trees .near{opacity:.5;height:78%}
+.trees path{fill:#2A1420}
+.leaves{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.leaf{position:absolute;top:-8vh;width:var(--w,34px);opacity:var(--op,.42);animation:fall var(--d,22s) linear var(--dl,0s) infinite}
+.leaf>svg{width:100%;animation:sway var(--sd,4s) ease-in-out infinite alternate;transform-origin:50% 10%}
+@keyframes fall{from{transform:translate3d(0,-10vh,0) rotate(0)}to{transform:translate3d(var(--dx,8vw),118vh,0) rotate(var(--r,320deg))}}
+@keyframes sway{from{transform:rotate(-22deg) translateX(-14px)}to{transform:rotate(26deg) translateX(14px)}}
+.grain{position:fixed;inset:0;z-index:5;pointer-events:none;opacity:.07;mix-blend-mode:multiply;
+background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .25  0 0 0 0 .15  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+body[data-sky=black] .trees, body[data-sky=black] .leaves, body[data-sky=black] .orb{opacity:0}
+.trees,.leaves{transition:opacity 1s}
+
+/* ---------- слайди ---------- */
+.deck{position:fixed;inset:0 0 var(--bar) 0;z-index:2}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:2.2vh 2.4vw;visibility:hidden;opacity:0;transform:translateX(var(--from,60px));transition:opacity .7s var(--ease),transform .9s var(--ease),visibility 0s .9s}
+.slide.is-active{visibility:visible;opacity:1;transform:none;transition:opacity .7s var(--ease),transform .9s var(--ease),visibility 0s}
+.slide.is-leaving{visibility:visible;opacity:0;transform:translateX(var(--to,-60px))}
+.sheet{position:relative;width:min(1560px,100%);max-height:100%;padding:3.4vh 3.4vw 3vh;border-radius:30px;background:rgba(251,243,228,.95);box-shadow:0 30px 60px -20px rgba(40,10,10,.45),0 2px 0 rgba(255,255,255,.6) inset;display:flex;flex-direction:column;gap:2.2vh}
+.th-dark .sheet{background:rgba(31,20,30,.82);color:var(--cream);box-shadow:0 30px 60px -20px rgba(0,0,0,.6);backdrop-filter:blur(3px)}
+.slide-black .sheet,.slide-scene .sheet{background:none;box-shadow:none;backdrop-filter:none}
+[data-s]{opacity:0;transform:translateY(22px)}
+.is-active [data-s]{animation:rise .8s var(--ease) both;animation-delay:calc(220ms + var(--i,0) * 90ms)}
+@keyframes rise{to{opacity:1;transform:none}}
+
+h1,h2{font-family:var(--serif);font-weight:700;margin:0;letter-spacing:-.01em;line-height:1.08}
+h2{font-size:var(--fs-h);text-align:center;color:var(--bordo)}
+.th-dark h2{color:#FFE0A8}
+p{margin:0}
+.col{display:flex;flex-direction:column;gap:2.2vh;justify-content:center}
+.split{display:grid;grid-template-columns:1.25fr 1fr;gap:3vw;align-items:center;min-height:0}
+
+/* фото на столі */
+.ph{margin:0;background:#fff;padding:10px;border-radius:16px;box-shadow:0 16px 30px -12px rgba(50,20,10,.45),0 2px 6px rgba(50,20,10,.15);transform:rotate(var(--tilt,0deg));transition:transform .5s var(--ease)}
+.ph img{border-radius:9px;width:100%;height:auto;max-height:var(--mh,56vh);object-fit:contain;margin:auto}
+.ph:hover{transform:rotate(0) scale(1.02)}
+
+/* іконки */
+.ic{display:inline-grid;place-items:center;width:1.9em;height:1.9em;border-radius:50%;color:#fff;flex:none;font-size:1em}
+.ic svg{width:56%;height:56%}
+.ic.md{font-size:1.25em}.ic.lg{font-size:clamp(46px,3.7vw,74px)}.ic.xl{font-size:clamp(60px,6vw,100px);background:none!important}.ic.xxl{font-size:clamp(110px,12vw,200px)}
+.ic-terra{background:var(--terra)}.ic-amber{background:var(--amber)}.ic-olive{background:var(--olive)}.ic-bordo{background:var(--bordo)}.ic-plum{background:var(--plum)}.ic-water{background:var(--water)}.ic-cream{background:none;color:var(--cream)}
+.c-olive{color:#4F5B26}.c-water{color:var(--water)}.c-bordo{color:var(--bordo)}.c-plum{color:var(--plum)}
+.th-dark .c-water{color:#9CC6F2}.th-dark .c-plum{color:#D7B4EA}.th-dark .c-bordo{color:#F2A8A0}
+
+/* кнопки звуку */
+.snd{display:inline-flex;flex-direction:column;align-items:center;gap:8px;background:none;border:0;cursor:pointer;padding:4px}
+.snd-b{display:grid;place-items:center;width:clamp(74px,6vw,108px);aspect-ratio:1;border-radius:50%;color:#fff;box-shadow:0 10px 22px -8px rgba(0,0,0,.5);transition:transform .25s var(--ease)}
+.snd-b svg{width:46%;height:46%}
+.snd:hover .snd-b{transform:scale(1.06)}
+.snd[aria-pressed=true] .snd-b{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,220,150,.7)}50%{box-shadow:0 0 0 16px rgba(255,220,150,0)}}
+.snd-l{font-weight:700;font-size:clamp(20px,1.3vw,26px)}
+.snd-sm .snd-b{width:clamp(48px,3.6vw,62px)}
+.snd-terra .snd-b{background:var(--terra)}.snd-water .snd-b{background:var(--water)}.snd-plum .snd-b{background:var(--plum)}.snd-olive .snd-b{background:var(--olive)}.snd-bordo .snd-b{background:var(--bordo)}.snd-night .snd-b{background:#3A3550}
+
+.quote{margin:0 auto;max-width:1100px;padding:1.6vh 2.4vw;border-radius:20px;background:#F4DFC1;color:var(--bordo);font-family:var(--serif);font-style:italic;font-weight:700;font-size:clamp(26px,1.9vw,38px);text-align:center;line-height:1.25}
+.q-big{font-size:clamp(30px,2.4vw,48px);text-align:left}
+.q-dark{background:rgba(255,224,168,.12);color:#FFE0A8}
+.credit,.src{font-size:var(--fs-s);color:var(--ink2);text-align:right;line-height:1.35}
+.src{text-align:left}
+.th-dark .credit,.th-dark .src{color:#E7D7C4}
+.lead{font-size:clamp(26px,1.9vw,38px);font-family:var(--serif);line-height:1.3}
+.lead-dark{color:#F4D9B8;text-align:center;font-style:italic}
+.say{font-family:var(--serif);font-weight:700;font-size:clamp(28px,2vw,40px)}
+.say-w{color:var(--water)}.say-r{color:var(--bordo)}.say-sm{font-size:clamp(24px,1.5vw,30px);color:var(--ink)}
+.tag{display:inline-block;padding:.25em .9em;border-radius:99px;color:#fff;font-weight:700;font-size:clamp(20px,1.35vw,26px)}
+.tag-olive{background:var(--olive)}.tag-amber{background:#8E560A}.tag-terra{background:var(--terra)}.tag-bordo{background:var(--bordo)}.tag-water{background:var(--water)}.tag-plum{background:var(--plum)}
+.note{font-size:clamp(18px,1.15vw,22px);font-style:italic;color:var(--ink2)}
+.dots{margin:0;padding-left:1.1em;display:grid;gap:.5em}
+.dots li::marker{color:var(--amber)}
+.ask{display:flex;align-items:center;gap:.6em;font-family:var(--serif);font-weight:700;font-size:clamp(32px,2.6vw,52px);color:var(--bordo)}
+.ask-light{color:#F4D9B8;font-size:clamp(26px,1.9vw,38px);font-family:var(--sans)}
+.ask-plum{color:var(--plum);justify-content:center;font-size:clamp(28px,2vw,40px)}
+.big-q{font-family:var(--serif);font-weight:700;font-size:clamp(36px,2.9vw,58px);line-height:1.15}
+.big-q-y{color:#FFD27A;text-align:center}
+
+/* --- 1 краплі */
+.slide-black .sheet{align-items:center;justify-content:center;min-height:60vh}
+.drops{display:flex;flex-direction:column;align-items:center;gap:2vh;color:#9AA3B5}
+.drop-t{font-style:italic;font-size:clamp(28px,2vw,40px);color:#B7BECB}
+.corner-snd{position:fixed;right:3vw;bottom:calc(var(--bar) + 3vh)}
+/* --- 2 титул */
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:3vw;align-items:center}
+.kicker{color:#FFD27A;font-weight:700;font-size:clamp(20px,1.4vw,28px);margin-bottom:1.6vh}
+.mega{font-size:clamp(64px,6.4vw,128px);color:var(--cream);line-height:.98}
+.hero .lead{margin-top:3vh;color:#F4D9B8;max-width:18em}
+.hero-ph{display:grid;grid-template-columns:1fr 1fr;gap:2.2vw}
+.hero-ph .ph{--mh:33vh}
+/* --- 3 доба */
+.day7{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(7,1fr);gap:1vw}
+.day7 li{display:flex;flex-direction:column;align-items:center;gap:1vh}
+.day7 img{width:100%;height:36vh;object-fit:cover;border-radius:14px;box-shadow:0 10px 20px -10px rgba(0,0,0,.5)}
+.day7 b{background:var(--terra);color:#fff;border-radius:99px;padding:.15em .7em;font-size:clamp(20px,1.3vw,26px)}
+.day7 li:nth-child(5) b{background:var(--bordo)}.day7 li:nth-child(n+6) b{background:var(--night)}
+.day7 span{font-weight:700;font-size:clamp(22px,1.35vw,28px)}
+.legend3{list-style:none;margin:0;padding:0;display:flex;justify-content:center;gap:3vw;flex-wrap:wrap;font-size:clamp(22px,1.35vw,28px)}
+.legend3 li{display:flex;align-items:center;gap:.5em}
+.legend3 .ic{font-size:.9em}
+/* --- 4 кроки */
+.steps{list-style:none;margin:0;padding:2vh 0;display:grid;grid-template-columns:repeat(5,1fr);gap:1vw;counter-reset:st}
+.steps li{display:flex;flex-direction:column;align-items:center;gap:1.6vh;text-align:center;position:relative}
+.steps li:not(:last-child)::after{content:"";position:absolute;top:calc(clamp(46px,3.7vw,74px)*.95);right:-1.2vw;width:2vw;height:4px;background:#D8C2A6;border-radius:4px}
+.steps b{font-size:clamp(24px,1.6vw,32px)}
+/* --- сцени */
+.slide-scene{padding:0}
+.slide-scene .sheet{width:100%;height:100%;max-height:none;padding:0;border-radius:0}
+.scene{position:relative;width:100%;height:100%;overflow:hidden}
+.scene-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.clock{position:absolute;left:3vw;top:4vh;background:#F3B843;color:var(--ink);font-family:var(--serif);font-weight:700;font-size:clamp(34px,2.6vw,56px);padding:.15em .7em;border-radius:99px;box-shadow:0 10px 20px -8px rgba(0,0,0,.5)}
+.glass{position:absolute;top:4vh;right:3vw;width:min(38vw,640px);padding:3vh 2.2vw;border-radius:26px;background:rgba(22,15,30,.84);color:#fff;box-shadow:0 20px 40px -16px rgba(0,0,0,.6)}
+.glass h2{text-align:left;color:#fff;margin-bottom:1.6vh;font-size:clamp(40px,3vw,60px)}
+.glass .h2-q{margin:0}
+.glass p{font-size:var(--fs-b)}
+.g-left{right:auto;left:3vw;top:15vh}
+.g-low{top:auto;bottom:16vh}
+.g-light{background:rgba(251,243,228,.94);color:var(--ink)}
+.g-light h2{color:var(--bordo)}
+.g-light .ph{--mh:44vh;margin:0 auto;width:fit-content}
+.scene-snd{position:absolute;left:3.4vw;bottom:15vh;color:#fff}
+.s-left{left:3.4vw}.s-top{top:15vh;bottom:auto}
+.g-left+.scene-snd{bottom:16vh}
+.src-scene{position:absolute;left:3vw;bottom:1.5vh;color:#F3E6D3;font-size:var(--fs-s);text-align:left}
+.tl{position:absolute;left:50%;bottom:5vh;transform:translateX(-50%);display:flex;gap:2.2vw;list-style:none;margin:0;padding:.6em 1.6em;border-radius:99px;background:rgba(0,0,0,.5);color:#fff;font-size:clamp(16px,1.05vw,20px)}
+.tl li{display:flex;align-items:center;gap:.45em;opacity:.8}
+.tl span{width:.75em;height:.75em;border-radius:50%;background:#fff;opacity:.7}
+.tl .on{opacity:1;color:#FFD27A;font-weight:700;font-size:1.15em}
+.tl .on span{background:#FFD27A;opacity:1;box-shadow:0 0 0 4px rgba(255,210,122,.3)}
+/* --- 6 */
+.duo{display:flex;gap:2vw;align-items:center;justify-content:center}
+.duo .ph{--mh:54vh;flex:1 1 0;min-width:0}
+.chain{list-style:none;margin:0;padding:0;display:grid;gap:3vh}
+.chain li{display:flex;align-items:center;gap:.7em;font-weight:700}
+/* --- 9/13 відео */
+.vid{display:flex;justify-content:center}
+.vid video{max-width:100%;max-height:68vh;border-radius:18px;background:#000;box-shadow:0 24px 40px -18px rgba(0,0,0,.7)}
+.vid-tall video{max-height:72vh}
+.s-13{grid-template-columns:.8fr 1.4fr}
+/* --- 10 */
+.s-10{grid-template-columns:1.6fr .8fr}
+.pig{list-style:none;margin:0;padding:0;display:grid;gap:2.2vh}
+.pig li{display:flex;align-items:center;gap:.6em;font-weight:700;font-size:clamp(26px,1.8vw,36px)}
+.pig i{width:1.6em;height:1.6em;border-radius:50%;box-shadow:0 0 0 4px #fff,0 6px 12px -4px rgba(0,0,0,.4)}
+/* --- 12 / колажі */
+.zoom,.coll{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:2vw;align-items:end}
+.coll3{grid-template-columns:repeat(3,1fr)}
+.zoom li,.coll li{display:flex;flex-direction:column;align-items:center;gap:1.8vh;text-align:center;min-width:0}
+.zoom .ph,.coll .ph{--mh:50vh}
+.coll b{font-family:var(--serif);font-size:clamp(28px,2vw,40px);line-height:1.15}
+.th-dark .coll b{color:#FFE0A8}
+.zoom li:not(:last-child){position:relative}
+/* --- 17 */
+.seeds{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:1.8vw}
+.seeds li{display:flex;flex-direction:column;align-items:center;gap:1.4vh;text-align:center}
+.seeds img{width:min(100%,30vh)}
+.seeds b{font-size:clamp(22px,1.45vw,30px)}
+/* --- 18 орбіта */
+.orbit{position:relative;height:62vh;display:grid;place-items:center}
+.orbit-c{width:30vh;height:30vh}
+.orbit ul{list-style:none;margin:0;padding:0;position:absolute;inset:0}
+.orbit li{position:absolute;left:50%;top:50%;display:flex;align-items:center;gap:.5em;font-weight:700;font-size:clamp(26px,1.8vw,36px);
+  transform:translate(-50%,-50%) translate(calc(cos(var(--a)) * min(34vw,46vh*1.25)),calc(sin(var(--a)) * 25vh))}
+.is-active .orbit li{animation-name:riseOrbit}
+@keyframes riseOrbit{from{opacity:0}to{opacity:1}}
+/* --- 19 */
+.s-19{grid-template-columns:.8fr 1.2fr}
+.timer{display:flex;flex-direction:column;align-items:center;gap:2vh}
+.timer b{font-size:clamp(32px,2.4vw,48px);color:var(--terra);font-family:var(--serif)}
+.dark-dots{font-size:clamp(28px,1.9vw,38px)}
+/* --- 21 */
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:3vw}
+.pair .ph{--mh:52vh}
+/* --- 22 */
+.slide-cold .sheet{background:rgba(6,24,44,.78)}
+.drop{display:grid;grid-template-columns:1.4fr .6fr;align-items:center;gap:2vw;padding:2vh 1vw}
+.t1517{font-family:var(--serif);font-weight:700;font-size:clamp(90px,9vw,180px);color:#A9D8F2;line-height:1}
+.tdrop{font-weight:800;letter-spacing:.06em;font-size:clamp(30px,2.4vw,48px)}
+.stop{font-weight:700;font-size:clamp(32px,2.3vw,46px)}
+.stop-y{color:#FFD27A}
+.pill-ice{align-self:flex-start;background:#A9D8F2;color:#0B2440;font-weight:800;padding:.35em 1.1em;border-radius:99px;font-size:clamp(24px,1.7vw,34px)}
+.therm{color:#fff;width:min(100%,26vh)}
+.therm svg{width:100%;height:auto}
+/* --- 23/24 */
+.s-23{grid-template-columns:1.2fr 1fr}
+.s-23 > .ph{--mh:58vh}
+.s-23 .col .ph{--mh:34vh}
+.s-24{grid-template-columns:1.9fr .7fr}
+.s-24 .ph{--mh:62vh}
+.rainwords{list-style:none;margin:0;padding:0;display:grid;gap:.4em;color:var(--water);font-weight:800;font-size:clamp(28px,1.9vw,38px)}
+.s-24 .col{align-items:flex-start}
+/* --- графіки */
+.charts2{display:grid;grid-template-columns:1fr 1fr;gap:3vw}
+.chart{margin:0}
+.chart svg{width:100%;height:auto;max-height:52vh;overflow:visible}
+.chart-line svg{max-height:60vh}
+.chart .t{font:700 28px var(--sans);fill:var(--ink)}
+.chart .lab{font:600 24px var(--sans);fill:var(--ink)}
+.chart .tick{font:500 21px var(--sans);fill:var(--ink2)}
+.chart .val{font:800 25px var(--sans);fill:var(--ink)}
+.chart .grid{stroke:#E5D7C3;stroke-width:1.5}
+.chart .axis{stroke:#8A7562;stroke-width:2}
+.chart .bx{transform-box:fill-box;transform-origin:50% 100%;transform:scaleY(0)}
+.is-active .chart .bx{animation:grow 1s var(--ease) forwards;animation-delay:calc(500ms + var(--k) * 90ms)}
+@keyframes grow{to{transform:scaleY(1)}}
+.chart .val,.chart .pt{opacity:0}
+.is-active .chart .val,.is-active .chart .pt{animation:rise .5s ease forwards;animation-delay:calc(900ms + var(--k) * 90ms);transform:none}
+.chart .ln{stroke-dasharray:var(--len);stroke-dashoffset:var(--len)}
+.is-active .chart .ln{animation:draw 2s var(--ease) .5s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.s-26{grid-template-columns:2.3fr .9fr}
+.kpi{border-radius:20px;padding:1.6vh 1.4vw;display:flex;flex-direction:column;gap:.3em}
+.kpi span{font-size:clamp(20px,1.3vw,26px)}
+.kpi b{font-size:clamp(26px,1.8vw,36px)}
+.kpi-hot{background:#F7DCD3;color:#8E2516}.kpi-cold{background:#DCE7F4;color:#1A4F8A}
+/* --- 27 */
+.weeks{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:2.4vw}
+.weeks li{background:#fff;border-radius:24px;padding:3.4vh 1.8vw;display:flex;flex-direction:column;align-items:center;text-align:center;gap:1.6vh;box-shadow:0 18px 30px -18px rgba(60,30,10,.45);transform:rotate(var(--r,0))}
+.weeks li:nth-child(1){--r:-1deg}.weeks li:nth-child(3){--r:1deg}
+.weeks b{font-family:var(--serif);font-size:clamp(30px,2.1vw,42px);color:var(--bordo)}
+.weeks p{font-size:var(--fs-b)}
+/* --- 28 */
+.studio{display:grid;grid-template-columns:1fr 1fr;gap:3vw;align-items:center}
+.studio-tag{display:flex;align-items:center;gap:.6em;font-weight:700;color:#F4D9B8}
+.studio-tag span{background:#F3B843;color:var(--ink);padding:.2em .8em;border-radius:99px;font-size:.85em}
+.studio-t{display:flex;align-items:center;gap:2vw}
+.studio-t svg{width:clamp(130px,12vw,230px);height:auto;color:#fff}
+.studio-t b{font-family:var(--serif);font-size:clamp(110px,10vw,200px);line-height:1;color:#fff}
+.studio-c{font-size:clamp(30px,2.1vw,42px);font-weight:700;padding-left:1.6vw}
+.wline{display:flex;align-items:center;gap:.6em;font-weight:700;font-size:clamp(28px,1.9vw,38px)}
+.studio-q{background:rgba(255,210,122,.12);border-radius:20px;padding:2.2vh 1.6vw;color:#FFD27A;font-weight:700;font-size:clamp(28px,1.9vw,38px);display:grid;gap:.5em}
+/* --- 30 */
+.smell{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:4vh 3vw}
+.smell li{display:flex;align-items:center;gap:.6em;font-weight:700;font-size:clamp(30px,2.1vw,42px)}
+/* --- 31-32 */
+.riddle,.answers{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:2vw;text-align:center}
+.riddle li{display:flex;flex-direction:column;align-items:center;gap:2vh}
+.riddle .snd-b{width:clamp(110px,9vw,170px)}
+.riddle li>b{display:grid;place-items:center;width:1.8em;height:1.8em;border-radius:50%;background:rgba(255,255,255,.14);font-size:clamp(28px,2vw,40px)}
+.answers li{display:flex;flex-direction:column;align-items:center;gap:1.4vh}
+.answers i{font-style:normal;display:grid;place-items:center;width:1.7em;height:1.7em;border-radius:50%;background:var(--ink);color:#fff;font-weight:700}
+.answers b{font-size:clamp(26px,1.8vw,36px);min-height:2.5em;line-height:1.2}
+/* --- 34 */
+.birds{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:2vw}
+.birds li{display:flex;flex-direction:column;align-items:center;gap:1.4vh;text-align:center}
+.birds img{width:min(100%,30vh)}
+.birds b{font-family:var(--serif);font-size:clamp(26px,1.8vw,36px)}
+/* --- карти */
+.s-map{grid-template-columns:auto 1fr;gap:4vw}
+.ph-map{--mh:68vh}
+.ph-map img{width:auto}
+.maplist{list-style:none;margin:0;padding:0;display:grid;gap:3.4vh}
+.maplist li{display:flex;align-items:center;gap:.7em;font-weight:700}
+.who{list-style:none;margin:0;padding:0;display:grid;gap:3vh}
+.who li{display:flex;align-items:center;gap:1.2vw}
+.who img{width:15vh}
+.who span{display:flex;flex-direction:column;font-size:var(--fs-b)}
+.who b{font-family:var(--serif);font-size:clamp(32px,2.2vw,44px)}
+/* --- 39 */
+.nav5{list-style:none;margin:0;padding:2vh 0 0;display:grid;grid-template-columns:repeat(5,1fr);gap:1.6vw;text-align:center}
+.nav5 li{display:flex;flex-direction:column;align-items:center;gap:1.8vh}
+.nav5 b{font-size:clamp(24px,1.6vw,32px)}
+/* --- 40 */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:2.4vw}
+.vs-c{background:#fff;border-radius:24px;padding:2.6vh 2vw;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:1vh 1vw;box-shadow:0 18px 30px -18px rgba(60,30,10,.45)}
+.vs-c b{font-family:var(--serif);font-size:clamp(34px,2.4vw,48px)}
+.vs-c p{grid-column:1/-1}
+.roles{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:2vw}
+.roles li{display:flex;align-items:center;gap:.6em;font-weight:700;font-size:clamp(28px,1.9vw,38px)}
+.g-top{top:4vh}
+/* --- 43 */
+.h24{font-family:var(--serif);font-weight:700;text-align:center;font-size:clamp(70px,6.4vw,130px);color:#FFD27A;letter-spacing:.08em;line-height:1}
+.chainx{list-style:none;margin:0;padding:2vh 0;display:grid;grid-template-columns:repeat(6,1fr);gap:1vw;text-align:center}
+.chainx li{display:flex;flex-direction:column;align-items:center;gap:1.6vh;position:relative}
+.chainx li:not(:last-child)::after{content:"";position:absolute;right:-1.3vw;top:calc(clamp(46px,3.7vw,74px)*.95);border:12px solid transparent;border-left:16px solid #F4D9B8}
+.chainx b{font-size:clamp(24px,1.6vw,32px)}
+.lead-c{text-align:center}
+/* --- 44 */
+.slide-fin .sheet{background:rgba(110,31,42,.9)}
+.fin{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2.6vh;padding:4vh 0}
+.fin1{font-family:var(--serif);font-weight:700;font-size:clamp(40px,3.6vw,74px);color:#fff}
+.fin2{font-family:var(--serif);font-weight:700;font-size:clamp(56px,5vw,104px);color:#FFC861}
+.fin-ic{width:clamp(80px,7vw,130px);color:#fff}
+.fin-ic svg{width:100%;height:auto}
+.fin3{font-size:clamp(30px,2.2vw,44px);font-weight:700;color:#fff}
+/* --- 45 */
+.credits{margin:0;padding-left:1.1em;display:grid;gap:1.4vh;font-size:clamp(18px,1.15vw,22px);line-height:1.45;max-width:1300px;margin-inline:auto}
+
+/* ---------- панель навігації ---------- */
+.bar{position:fixed;left:0;right:0;bottom:0;height:var(--bar);z-index:10;display:flex;align-items:center;gap:12px;padding:0 18px;background:rgba(30,18,26,.88);color:var(--cream)}
+.prog{position:absolute;left:0;top:0;height:5px;width:100%;background:rgba(255,255,255,.12)}
+.prog i{display:block;height:100%;width:var(--p,0%);background:linear-gradient(90deg,#F3B843,#E06A3A);transition:width .6s var(--ease)}
+.bar .num{font-variant-numeric:tabular-nums;font-weight:700;font-size:20px;min-width:5.5em}
+.bar .ttl{flex:1;font-size:18px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar button{background:rgba(255,255,255,.1);border:0;border-radius:12px;height:44px;min-width:44px;padding:0 14px;cursor:pointer;font-size:18px;display:inline-flex;align-items:center;gap:8px;color:var(--cream)}
+.bar button:hover{background:rgba(255,255,255,.2)}
+.bar kbd{font:700 14px var(--sans);background:rgba(255,255,255,.18);border-radius:6px;padding:2px 7px}
+.zone{position:fixed;top:0;bottom:var(--bar);width:9vw;z-index:3;cursor:pointer;background:none;border:0}
+.zone-l{left:0;cursor:w-resize}.zone-r{right:0;cursor:e-resize}
+
+/* огляд */
+.ov{position:fixed;inset:0;z-index:20;background:rgba(25,14,22,.95);overflow:auto;padding:4vh 4vw;display:none}
+.ov.open{display:block}
+.ov h2{color:#FFE0A8;margin-bottom:3vh;font-size:clamp(32px,2.4vw,48px)}
+.ov ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.ov a{display:flex;flex-direction:column;gap:8px;text-decoration:none;color:var(--cream);background:rgba(255,255,255,.07);border-radius:16px;padding:10px;border:2px solid transparent;height:100%}
+.ov a:hover,.ov a.cur{border-color:#F3B843}
+.ov .th{aspect-ratio:16/9;border-radius:10px;background:linear-gradient(160deg,var(--a),var(--b));display:grid;place-items:center;overflow:hidden}
+.ov .th img{width:100%;height:100%;object-fit:cover}
+.ov .th span{font:700 40px var(--serif);color:rgba(255,255,255,.85)}
+.ov a b{font-size:18px;line-height:1.3}
+.ov a small{opacity:.7;font-size:15px}
+/* нотатки */
+.notes-p{position:fixed;right:18px;bottom:calc(var(--bar) + 14px);z-index:15;width:min(620px,calc(100vw - 36px));max-height:min(62vh,700px);overflow:auto;background:#FFF9EE;color:var(--ink);border-radius:20px;padding:22px 26px;box-shadow:0 30px 60px -20px rgba(0,0,0,.6);font-size:19px;line-height:1.5;white-space:pre-wrap;display:none}
+.notes-p.open{display:block}
+.notes-p h3{margin:0 0 10px;font:700 22px var(--serif);color:var(--bordo);white-space:normal}
+.help{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:16;background:rgba(30,18,26,.92);color:var(--cream);padding:12px 20px;border-radius:14px;font-size:17px;opacity:0;pointer-events:none;transition:opacity .6s}
+.help.show{opacity:1}
+
+/* ---------- адаптив ---------- */
+@media (max-width: 900px), (max-aspect-ratio: 4/5){
+  :root{--fs-h:30px;--fs-b:19px;--fs-s:18px;--bar:58px}
+  body{font-size:var(--fs-b)}
+  .slide{align-items:flex-start;overflow-y:auto;padding:12px 10px 24px;-webkit-overflow-scrolling:touch}
+  .sheet{max-height:none;padding:20px 16px;border-radius:22px;gap:16px}
+  .split,.hero,.s-6,.s-10,.s-13,.s-19,.s-23,.s-24,.s-26,.s-map,.studio,.pair,.charts2,.vs,.drop{grid-template-columns:1fr}
+  .duo{flex-direction:column}
+  .duo .ph,.pair .ph,.zoom .ph,.coll .ph,.ph-map,.s-24 .ph,.s-23 > .ph{--mh:60vh}
+  .ph-map img{width:100%}
+  .mega{font-size:52px}
+  .hero-ph .ph{--mh:28vh}
+  .day7{grid-template-columns:repeat(2,1fr);gap:12px}
+  .day7 img{height:22vh}
+  .steps{grid-template-columns:1fr 1fr;gap:20px}
+  .steps li::after{display:none}
+  .zoom,.coll,.coll3,.birds,.weeks,.roles,.answers,.riddle{grid-template-columns:1fr 1fr;gap:16px}
+  .seeds,.nav5,.chainx{grid-template-columns:repeat(3,1fr);gap:12px}
+  .chainx li::after{display:none}
+  .smell{grid-template-columns:1fr 1fr;gap:18px}
+  .ic.lg{font-size:46px}
+  .quote,.q-big{font-size:22px;text-align:center}
+  .ask{font-size:28px}
+  .lead,.say,.big-q{font-size:24px}
+  .orbit{height:auto;display:flex;flex-direction:column;gap:14px}
+  .orbit-c{width:40vw;height:40vw}
+  .orbit ul{position:static;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .orbit li{position:static;transform:none;font-size:20px}
+  .slide-scene .sheet{height:auto}
+  .scene{height:auto;display:flex;flex-direction:column;gap:12px;overflow:visible}
+  .scene-img{position:static;height:auto;aspect-ratio:16/9;border-radius:18px}
+  .clock{left:16px;top:12px;font-size:26px}
+  .glass,.g-left,.g-low,.g-top{position:static;width:100%;padding:18px;border-radius:18px}
+  .glass h2{font-size:28px}
+  .g-light .ph{--mh:40vh}
+  .scene-snd,.s-left{position:static;align-self:flex-start}
+  .src-scene{position:static;color:#fff}
+  .tl{position:static;transform:none;flex-wrap:wrap;justify-content:center;gap:10px 14px;border-radius:18px;font-size:18px}
+  .t1517{font-size:84px}.tdrop{font-size:24px}.stop{font-size:24px}
+  .therm{width:30vw}
+  .studio-t b{font-size:90px}.studio-t svg{width:110px}
+  .h24{font-size:56px}
+  .fin1{font-size:30px}.fin2{font-size:42px}
+  .zone{display:none}
+  .chart{overflow-x:auto;padding-bottom:6px}
+  .chart svg{min-width:540px;max-height:none}
+  .chart-line svg{min-width:780px}
+  .slide-scene .sheet{background:rgba(22,15,30,.86);padding:14px;border-radius:22px}
+  .bar .ttl{display:none}
+  .bar .lbl{display:none}
+  .corner-snd{position:static}
+  .credits{font-size:18px}
+  .note{font-size:18px}
+}
+@media (max-height:640px) and (min-width:901px){
+  :root{--fs-h:40px;--fs-b:22px}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  .leaf{display:none}
+  [data-s]{opacity:1;transform:none}
+  .chart .bx{transform:none}.chart .val,.chart .pt{opacity:1}.chart .ln{stroke-dashoffset:0}
+}
+</style>
+</head>
+<body data-sky="sunset">
+<div class="sky" aria-hidden="true"></div>
+<div class="orb" aria-hidden="true"></div>
+<div class="trees" aria-hidden="true">
+  <svg class="far" viewBox="0 0 3000 300" preserveAspectRatio="none"><path id="tf" d=""/></svg>
+  <svg class="near" viewBox="0 0 3000 300" preserveAspectRatio="none"><path id="tn" d=""/></svg>
+</div>
+<div class="leaves" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<main class="deck" id="deck" aria-live="polite">
+<section class="slide slide-black th-dark" id="slide-1" data-sky="black" data-title="Вхід в осінь" aria-roledescription="слайд" aria-label="1 з 45: Вхід в осінь" hidden>
+<div class="sheet"><div class="drops" data-s><span class="ic ic-cream xl" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><path d="M192 512C86 512 0 426 0 320C0 228.8 130.2 57.7 166.6 11.7C172.6 4.2 181.5 0 191.1 0l1.8 0c9.6 0 18.5 4.2 24.5 11.7C253.8 57.7 384 228.8 384 320c0 106-86 192-192 192zM96 336c0-8.8-7.2-16-16-16s-16 7.2-16 16c0 61.9 50.1 112 112 112c8.8 0 16-7.2 16-16s-7.2-16-16-16c-44.2 0-80-35.8-80-80z"></path></svg></span><p class="drop-t">цок… цок… цок…</p></div>
+<div class="corner-snd" data-s><button class="snd snd-night snd-sm" data-src="media/entry_drops.mp3" aria-label="Увімкнути звук: краплі дощу" aria-pressed="false"><span class="snd-b"><svg fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"></path></svg></span></button></div></div>
+<template class="notes">ВХІД В ОСІНЬ (00:00 сценарію).
+Діти заходять. Світло в залі приглушене. Ведучого немає. Екран майже чорний.
+ЗВУК: клацніть по маленькій кнопці гучномовця в правому нижньому куті — тихі краплі дощу (30 с, плавний початок і кінець). Нехай звучить, поки всі заходять і сідають.
+Нічого не пояснюємо — глядач просто потрапляє в атмосферу.
+Коли звук стихне (або раніше — клік далі), переходимо до назви.
+Звук: Wikimedia Commons, «Rain (1).ogg», суспільне надбання.</template></section>
+<section class="slide  th-dark" id="slide-2" data-sky="sunset" data-title="24 години всередині осені" aria-roledescription="слайд" aria-label="2 з 45: 24 години всередині осені" hidden>
+<div class="sheet"><div class="hero">
+<div class="hero-t" data-s><p class="kicker">Наукова конференція</p><h1 class="mega">24 години<br>всередині<br>осені</h1>
+<p class="lead">Що відбувається з природою протягом однієї осінньої доби?</p></div>
+<div class="hero-ph" data-s><figure class="ph " style="--tilt:-3deg"><img src="img/leaf-159.jpg" alt="Листок каштана з дослідження" loading="lazy"></figure><figure class="ph " style="--tilt:2.5deg"><img src="img/leaf-172.jpg" alt="Гілочка берези з листям і сережками" loading="lazy"></figure><figure class="ph " style="--tilt:2deg"><img src="img/leaf-177.jpg" alt="Листок клена з крилатками" loading="lazy"></figure><figure class="ph " style="--tilt:-2deg"><img src="img/leaf-185.jpg" alt="Листки липи з горішками" loading="lazy"></figure></div>
+</div></div>
+<template class="notes">НАЗВА.
+Ведучий: «Сьогодні ми проживемо разом одну осінню добу — від 06:00 ранку до 00:00 ночі — і дізнаємося, що відбувається з природою за цей час».
+Головне питання конференції: «Що відбувається з природою протягом однієї осінньої доби?»
+Ключовий принцип: ми не просто розповідаємо факти — ми спостерігаємо, ставимо питання, висуваємо гіпотезу, перевіряємо, збираємо докази і робимо висновок.
+Фото: дослідження листя, зроблені дітьми (каштан, береза, клен, липа).</template></section>
+<section class="slide  th-light" id="slide-3" data-sky="sunset" data-title="Наша осіння доба" aria-roledescription="слайд" aria-label="3 з 45: Наша осіння доба" hidden>
+<div class="sheet"><h2 data-s>Наша осіння доба</h2><ol class="day7"><li data-s><img src="img/scene-06.jpg" alt="Те саме місце о 06:00"><b>06:00</b><span>ранок</span></li><li data-s><img src="img/scene-09.jpg" alt="Те саме місце о 09:00"><b>09:00</b><span>світло</span></li><li data-s><img src="img/scene-12.jpg" alt="Те саме місце о 12:00"><b>12:00</b><span>полудень</span></li><li data-s><img src="img/scene-15.jpg" alt="Те саме місце о 15:00"><b>15:00</b><span>вітер</span></li><li data-s><img src="img/scene-18.jpg" alt="Те саме місце о 18:00"><b>18:00</b><span>сутінки</span></li><li data-s><img src="img/scene-21.jpg" alt="Те саме місце о 21:00"><b>21:00</b><span>ніч</span></li><li data-s><img src="img/scene-00.jpg" alt="Те саме місце о 00:00"><b>00:00</b><span>північ</span></li></ol>
+<ul class="legend3" data-s><li><span class="ic ic-terra " aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M361.5 1.2c5 2.1 8.6 6.6 9.6 11.9L391 121l107.9 19.8c5.3 1 9.8 4.6 11.9 9.6s1.5 10.7-1.6 15.2L446.9 256l62.3 90.3c3.1 4.5 3.7 10.2 1.6 15.2s-6.6 8.6-11.9 9.6L391 391 371.1 498.9c-1 5.3-4.6 9.8-9.6 11.9s-10.7 1.5-15.2-1.6L256 446.9l-90.3 62.3c-4.5 3.1-10.2 3.7-15.2 1.6s-8.6-6.6-9.6-11.9L121 391 13.1 371.1c-5.3-1-9.8-4.6-11.9-9.6s-1.5-10.7 1.6-15.2L65.1 256 2.8 165.7c-3.1-4.5-3.7-10.2-1.6-15.2s6.6-8.6 11.9-9.6L121 121 140.9 13.1c1-5.3 4.6-9.8 9.6-11.9s10.7-1.5 15.2 1.6L256 65.1 346.3 2.8c4.5-3.1 10.2-3.7 15.2-1.6zM160 256a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zm224 0a128 128 0 1 0 -256 0 128 128 0 1 0 256 0z"></path></svg></span>Світло змінюється</li><li><span class="ic ic-terra " aria-hidden="true"><svg fill="currentColor" viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><path d="M128 112c0-26.5 21.5-48 48-48s48 21.5 48 48l0 164.5c0 17.3 7.1 31.9 15.3 42.5C249.8 332.6 256 349.5 256 368c0 44.2-35.8 80-80 80s-80-35.8-80-80c0-18.5 6.2-35.4 16.7-48.9c8.2-10.6 15.3-25.2 15.3-42.5L128 112zM176 0C114.1 0 64 50.1 64 112l0 164.4c0 .1-.1 .3-.2 .6c-.2 .6-.8 1.6-1.7 2.8C43.2 304.2 32 334.8 32 368c0 79.5 64.5 144 144 144s144-64.5 144-144c0-33.2-11.2-63.8-30.1-88.1c-.9-1.2-1.5-2.2-1.7-2.8c-.1-.3-.2-.5-.2-.6L288 112C288 50.1 237.9 0 176 0zm0 416c26.5 0 48-21.5 48-48c0-20.9-13.4-38.7-32-45.3l0-50.7c0-8.8-7.2-16-16-16s-16 7.2-16 16l0 50.7c-18.6 6.6-32 24.4-32 45.3c0 26.5 21.5 48 48 48zm336-64l-32 0 0-288c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 288-32 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l64 64c6 6 14.1 9.4 22.6 9.4s16.6-3.4 22.6-9.4l64-64c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8z"></path></svg></span>Температура змінюється</li><li><span class="ic ic-terra " aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M77.313 28.438l36.406 51.25L44.874 98.25l34.688 18.53c-37.62 38-62.482 102.735-57.532 198.94V493h147.314v-.188H269.75c-13.74-59.032-15.368-110.625-5.563-149.875-16.954-7.98-25.126-17.362-32.75-30.375 51.348 21.135 127.618 35.582 200.47 18.594-23.227-10.096-47.07-22.578-70.094-37.156-.013-.007-.02-.024-.032-.03-17.996-10.514-34.942-22.247-49.967-36.376-9.385-7.88-18.41-16.142-26.907-24.78 36.074-25.505 77.297-40.297 118.656-46.876-7.72 5.104-15.336 10.82-22.687 16.937-18.272 15.207-34.737 32.736-45.313 50.656 4.9 3.986 10.02 7.785 15.313 11.44 9.017-15.524 24.43-33.122 41.97-47.72 24.26-20.193 52.937-34.698 70.06-35.375h.126c10.89.214 21.608.935 32.064 2.125-10.838-7.647-21.748-14.487-32.72-20.563v-.25c-.145.006-.29.025-.437.032-54.844-30.266-111.23-41.295-168.03-36.72-21.272-24.23-49.025-40.62-78.657-47.875L77.312 28.437zm74.343 107.312c4.67 0 9.16.754 13.375 2.125-8.493 2.716-14.655 10.667-14.655 20.063 0 11.634 9.428 21.062 21.063 21.062 9.84 0 18.122-6.754 20.437-15.875 1.934 4.905 3 10.252 3 15.844 0 23.867-19.35 43.218-43.22 43.218-23.867 0-43.218-19.35-43.218-43.22 0-23.867 19.35-43.218 43.22-43.218z"></path></svg></span>Тварини поводяться інакше</li></ul></div>
+<template class="notes">ОДНА ДОБА.
+Покажіть дітям «маршрут» нашої доби: ранок → день → вечір → ніч.
+Це одне й те саме місце (дерево, шкільний будиночок), намальоване в різний час. Попросіть порівняти: «Що змінюється? Небо? Сонце? Птахи? Вікна?»
+Ці малюнки — навчальна ілюстрація, не фотографії.
+Внизу три речі, за якими стежимо цілий день: світло, температура, поведінка живих істот.
+Важливо: тут ми говоримо про зміни ПРОТЯГОМ ДОБИ (за години). Зміни за тижні (осінь) — окремо, на пізнішому слайді.</template></section>
+<section class="slide  th-light" id="slide-4" data-sky="sunset" data-title="Як працює вчений" aria-roledescription="слайд" aria-label="4 з 45: Як працює вчений" hidden>
+<div class="sheet"><h2 data-s>Як працює вчений</h2><ol class="steps"><li data-s><span class="ic ic-olive lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"></path></svg></span><b>Помічаю</b></li><li data-s><span class="ic ic-amber lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><path d="M80 160c0-35.3 28.7-64 64-64l32 0c35.3 0 64 28.7 64 64l0 3.6c0 21.8-11.1 42.1-29.4 53.8l-42.2 27.1c-25.2 16.2-40.4 44.1-40.4 74l0 1.4c0 17.7 14.3 32 32 32s32-14.3 32-32l0-1.4c0-8.2 4.2-15.8 11-20.2l42.2-27.1c36.6-23.6 58.8-64.1 58.8-107.7l0-3.6c0-70.7-57.3-128-128-128l-32 0C73.3 32 16 89.3 16 160c0 17.7 14.3 32 32 32s32-14.3 32-32zm80 320a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"></path></svg></span><b>Запитую</b></li><li data-s><span class="ic ic-terra lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><path d="M272 384c9.6-31.9 29.5-59.1 49.2-86.2c0 0 0 0 0 0c5.2-7.1 10.4-14.2 15.4-21.4c19.8-28.5 31.4-63 31.4-100.3C368 78.8 289.2 0 192 0S16 78.8 16 176c0 37.3 11.6 71.9 31.4 100.3c5 7.2 10.2 14.3 15.4 21.4c0 0 0 0 0 0c19.8 27.1 39.7 54.4 49.2 86.2l160 0zM192 512c44.2 0 80-35.8 80-80l0-16-160 0 0 16c0 44.2 35.8 80 80 80zM112 176c0 8.8-7.2 16-16 16s-16-7.2-16-16c0-61.9 50.1-112 112-112c8.8 0 16 7.2 16 16s-7.2 16-16 16c-44.2 0-80 35.8-80 80z"></path></svg></span><b>Припускаю</b></li><li data-s><span class="ic ic-bordo lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M288 0L160 0 128 0C110.3 0 96 14.3 96 32s14.3 32 32 32l0 132.8c0 11.8-3.3 23.5-9.5 33.5L10.3 406.2C3.6 417.2 0 429.7 0 442.6C0 480.9 31.1 512 69.4 512l309.2 0c38.3 0 69.4-31.1 69.4-69.4c0-12.8-3.6-25.4-10.3-36.4L329.5 230.4c-6.2-10.1-9.5-21.7-9.5-33.5L320 64c17.7 0 32-14.3 32-32s-14.3-32-32-32L288 0zM192 196.8L192 64l64 0 0 132.8c0 23.7 6.6 46.9 19 67.1L309.5 320l-171 0L173 263.9c12.4-20.2 19-43.4 19-67.1z"></path></svg></span><b>Перевіряю</b></li><li data-s><span class="ic ic-plum lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1 0 32c0 8.8 7.2 16 16 16l32 0zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path></svg></span><b>Роблю висновок</b></li></ol>
+<blockquote class="quote" data-s>«У науці недостатньо сказати „я бачу“. Потрібно перевірити».</blockquote></div>
+<template class="notes">ЯК ПРАЦЮЄ ВЧЕНИЙ.
+Підготовка (2 тижні): «ПОМІЧАЙ» (дні 1–5) → «ЗАПИТУЙ» (дні 6–7) → «ПЕРЕВІРЯЙ» (день 8).
+Кроки: помічаю → ставлю питання → висуваю гіпотезу (припущення) → перевіряю дослідом → порівнюю очікування з результатом → роблю висновок.
+Ключова фраза ведучого: «У науці недостатньо сказати „я бачу“. Потрібно перевірити».</template></section>
+<section class="slide slide-scene th-dark" id="slide-5" data-sky="dawn" data-title="06:00 Світає" aria-roledescription="слайд" aria-label="5 з 45: 06:00 Світає" hidden>
+<div class="sheet"><div class="scene"><img class="scene-img" src="img/scene-06.jpg" alt="Наше дерево і будиночок о 06:00">
+<div class="clock" data-s>06:00</div><div class="glass g-right" data-s><h2>Світає</h2><ul class="dots">
+<li>Ще темно, небо світлішає</li><li>Сонце сходить пізніше: 22.10 в Одесі — о 07:24</li><li>Прохолодно, на траві роса</li><li>Птахи прокидаються і подають голос</li></ul></div><div class="scene-snd" data-s><button class="snd snd-terra" data-src="media/robin.mp3" aria-label="Увімкнути звук: Ранкові птахи" aria-pressed="false"><span class="snd-b"><svg fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"></path></svg></span><span class="snd-l">Ранкові птахи</span></button></div><p class="src src-scene">Схід Сонця: Open-Meteo, Одеса, 22.10.2026</p><ol class="tl" aria-label="Час доби"><li class="on" aria-current="step"><span></span>06:00</li><li class=""><span></span>09:00</li><li class=""><span></span>12:00</li><li class=""><span></span>15:00</li><li class=""><span></span>18:00</li><li class=""><span></span>21:00</li><li class=""><span></span>00:00</li></ol></div></div>
+<template class="notes">06:00 — РАНОК.
+На екрані — світанок над нашим деревом. Покажіть: небо світлішає з краю, вікна ще світяться, на траві роса.
+ЗВУК: кнопка «Ранкові птахи» — пісня вільшанки (малинівки), ≈30 с. Слухати 15–20 с, потім клікнути ще раз, щоб зупинити.
+Питання: «Хто прокинувся першим? Що ви чуєте?» (Вільшанки співають і восени, часто ще в сутінках.)
+Факт: 22 жовтня в Одесі Сонце сходить о 07:24 — тобто о 06:00 ще темно, тільки світає (дані Open-Meteo).
+Звук: Wikimedia Commons / xeno-canto XC178578, автор Dan Stowell, CC BY-SA 4.0. Запис зроблено не в Україні — це той самий вид птаха.</template></section>
+<section class="slide  th-light" id="slide-6" data-sky="dawn" data-title="Дослід «Чи сухий листок?»" aria-roledescription="слайд" aria-label="6 з 45: Дослід «Чи сухий листок?»" hidden>
+<div class="sheet"><h2 data-s>Дослід «Чи сухий листок?»</h2><div class="split s-6">
+<div class="duo" data-s><figure class="ph " style="--tilt:-2deg"><img src="img/dew.jpg" alt="Ранкова роса на павутинні" loading="lazy"></figure><figure class="ph " style="--tilt:2deg"><img src="img/leaf-197.jpg" alt="Листок крупним планом, видно прожилки" loading="lazy"></figure></div>
+<ol class="chain" data-s><li><span class="ic ic-amber " aria-hidden="true"><svg fill="currentColor" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M128 40c0-22.1 17.9-40 40-40s40 17.9 40 40l0 148.2c8.5-7.6 19.7-12.2 32-12.2c20.6 0 38.2 13 45 31.2c8.8-9.3 21.2-15.2 35-15.2c25.3 0 46 19.5 47.9 44.3c8.5-7.7 19.8-12.3 32.1-12.3c26.5 0 48 21.5 48 48l0 48 0 16 0 48c0 70.7-57.3 128-128 128l-16 0-64 0-.1 0-5.2 0c-5 0-9.9-.3-14.7-1c-55.3-5.6-106.2-34-140-79L8 336c-13.3-17.7-9.7-42.7 8-56s42.7-9.7 56 8l56 74.7L128 40zM240 304c0-8.8-7.2-16-16-16s-16 7.2-16 16l0 96c0 8.8 7.2 16 16 16s16-7.2 16-16l0-96zm48-16c-8.8 0-16 7.2-16 16l0 96c0 8.8 7.2 16 16 16s16-7.2 16-16l0-96c0-8.8-7.2-16-16-16zm80 16c0-8.8-7.2-16-16-16s-16 7.2-16 16l0 96c0 8.8 7.2 16 16 16s16-7.2 16-16l0-96z"></path></svg></span>На дотик сухий</li><li><span class="ic ic-terra " aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"></path></svg></span>Перевіряємо під камерою</li><li><span class="ic ic-water " aria-hidden="true"><svg fill="currentColor" viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><path d="M192 512C86 512 0 426 0 320C0 228.8 130.2 57.7 166.6 11.7C172.6 4.2 181.5 0 191.1 0l1.8 0c9.6 0 18.5 4.2 24.5 11.7C253.8 57.7 384 228.8 384 320c0 106-86 192-192 192zM96 336c0-8.8-7.2-16-16-16s-16 7.2-16 16c0 61.9 50.1 112 112 112c8.8 0 16-7.2 16-16s-7.2-16-16-16c-44.2 0-80-35.8-80-80z"></path></svg></span>Висновок?</li></ol></div>
+<p class="credit" data-s>Ліворуч: «Morning dew drops», Kumar Rohan, CC BY-SA 4.0 (Wikimedia Commons). Праворуч: фото дітей.</p></div>
+<template class="notes">06:00 — ДОСЛІДЖУЄМО ЛИСТОК.
+Виходить дитина з листком.
+Дитина: «О шостій ранку цей листок виглядає зовсім не так, як удень».
+Листок кладемо під камеру — на екрані він великий. Діти розглядають краплі, прожилки, поверхню.
+Експеримент «Чи сухий листок?»
+Дитина: «На дотик він сухий. Але ми вирішили перевірити». Команда проводить простий дослід із вологою (наприклад, прикласти серветку / подивитися під камерою).
+Ключова фраза ведучого: «У науці недостатньо сказати „я бачу“. Потрібно перевірити».
+Ліве фото — приклад ранкової роси (Wikimedia Commons), праве — листок із дитячого дослідження.</template></section>
+<section class="slide slide-scene th-dark" id="slide-7" data-sky="morning" data-title="09:00 Чому листок зелений?" aria-roledescription="слайд" aria-label="7 з 45: 09:00 Чому листок зелений?" hidden>
+<div class="sheet"><div class="scene"><img class="scene-img" src="img/scene-09.jpg" alt="Наше дерево і будиночок о 09:00">
+<div class="clock" data-s>09:00</div><div class="glass g-right g-light" data-s><h2>Чому листок зелений?</h2><figure class="ph " style="--tilt:1.5deg"><img src="img/leaf-166.jpg" alt="Зелений листок волоського горіха" loading="lazy"></figure></div><ol class="tl" aria-label="Час доби"><li class=""><span></span>06:00</li><li class="on" aria-current="step"><span></span>09:00</li><li class=""><span></span>12:00</li><li class=""><span></span>15:00</li><li class=""><span></span>18:00</li><li class=""><span></span>21:00</li><li class=""><span></span>00:00</li></ol></div></div>
+<template class="notes">09:00 — СВІТЛО.
+Проекція стає яскравішою. Сонце вже піднялося, стало світліше й тепліше (зазвичай).
+Питання до залу: «Чому листок зелений?»
+Нехай діти висловлять припущення — не підказуйте.
+На фото — листок волоського горіха з дитячого дослідження.</template></section>
+<section class="slide  th-light" id="slide-8" data-sky="morning" data-title="Помилка вченого" aria-roledescription="слайд" aria-label="8 з 45: Помилка вченого" hidden>
+<div class="sheet"><h2 data-s>Помилка вченого</h2><div class="split">
+<div class="col"><blockquote class="quote q-big" data-s>«Листок зелений, бо в ньому тільки зелений пігмент»</blockquote>
+<p class="ask" data-s><span class="ic ic-bordo lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><path d="M80 160c0-35.3 28.7-64 64-64l32 0c35.3 0 64 28.7 64 64l0 3.6c0 21.8-11.1 42.1-29.4 53.8l-42.2 27.1c-25.2 16.2-40.4 44.1-40.4 74l0 1.4c0 17.7 14.3 32 32 32s32-14.3 32-32l0-1.4c0-8.2 4.2-15.8 11-20.2l42.2-27.1c36.6-23.6 58.8-64.1 58.8-107.7l0-3.6c0-70.7-57.3-128-128-128l-32 0C73.3 32 16 89.3 16 160c0 17.7 14.3 32 32 32s32-14.3 32-32zm80 320a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"></path></svg></span>А ви впевнені?</p></div>
+<div data-s><figure class="ph " style="--tilt:2deg"><img src="img/leaf-428.jpg" alt="Дівчинка розтирає листя в ступці" loading="lazy"></figure></div></div></div>
+<template class="notes">ПОМИЛКА ВЧЕНОГО (навмисна).
+Одна дитина спеціально каже: «Ми думали, що листок зелений, тому що він містить тільки зелений пігмент».
+Ведучий: «А ви впевнені?» — пауза, нехай зал подумає.
+Далі — відео нашого досліду з пігментами.
+Фото: дитина подрібнює листя в ступці (наше дослідження).</template></section>
+<section class="slide  th-dark" id="slide-9" data-sky="morning" data-title="Лабораторія кольору: наш дослід" aria-roledescription="слайд" aria-label="9 з 45: Лабораторія кольору: наш дослід" hidden>
+<div class="sheet"><h2 data-s>Лабораторія кольору: наш дослід</h2><div class="vid" data-s><video controls preload="metadata" poster="img/posterA.jpg" aria-label="Відео: дослід із пігментами листка"><source src="media/video-pigments.mp4" type="video/mp4"></video></div></div>
+<template class="notes">ВІДЕО «ЛАБОРАТОРІЯ КОЛЬОРУ» (1 хв 46 с, зі звуком — говорить учитель).
+ЗАПУСК: клацніть по відео (або наведіть курсор і натисніть ▶ на панелі). ЗУПИНКА: клік по відео ще раз.
+Зміст: діти подрібнюють зелене й жовте листя, заливають розчинником, фільтрують — отримують кольорові розчини.
+Під час відео звук інших доріжок не вмикати.
+Після відео — наступний слайд із результатом.</template></section>
+<section class="slide  th-light" id="slide-10" data-sky="morning" data-title="Не один колір, а ціла команда!" aria-roledescription="слайд" aria-label="10 з 45: Не один колір, а ціла команда!" hidden>
+<div class="sheet"><h2 data-s>Не один колір, а ціла команда!</h2><div class="split s-10">
+<div class="duo" data-s><figure class="ph " style="--tilt:-1.5deg"><img src="img/leaf-425.jpg" alt="Жовтий і зелений розчини пігментів у склянках" loading="lazy"></figure><figure class="ph " style="--tilt:2.5deg"><img src="img/leaf-426.jpg" alt="Діти дивляться на світний розчин" loading="lazy"></figure></div>
+<ul class="pig" data-s><li><i style="background:#0A7A3A"></i>зелений</li><li><i style="background:#C98A12"></i>жовтий</li><li><i style="background:#C9581F"></i>оранжевий</li><li><i style="background:#9E2B1B"></i>червоний</li></ul></div>
+<blockquote class="quote" data-s>«Ми думали — один колір. А там ціла команда пігментів!»</blockquote></div>
+<template class="notes">РЕЗУЛЬТАТ: КОМАНДА ПІГМЕНТІВ.
+Дитина: «Ми думали, що листок зелений через один колір. Але виявилося, що там ціла команда пігментів».
+Для ведучого (простими словами):
+• зелений — хлорофіл, з його допомогою листок «ловить» сонячне світло;
+• жовтий і оранжевий — каротиноїди, вони є в листку й улітку, але їх «ховає» зелений;
+• червоний — антоціани, у деяких дерев з’являються восени.
+На фото (наш дослід): жовтий і зелений розчини з різного листя; розчин світиться в променях ліхтарика.
+Якщо робили хроматографію на папері — покажіть смужку наживо під камерою.</template></section>
+<section class="slide slide-scene th-dark" id="slide-11" data-sky="noon" data-title="12:00 Ми зменшилися!" aria-roledescription="слайд" aria-label="11 з 45: 12:00 Ми зменшилися!" hidden>
+<div class="sheet"><div class="scene"><img class="scene-img" src="img/scene-12.jpg" alt="Наше дерево і будиночок о 12:00">
+<div class="clock" data-s>12:00</div><div class="glass g-right g-low" data-s><h2>Ми зменшилися!</h2><p>Сонце — найвище за день. Але восени воно не піднімається так високо, як улітку.</p></div><ol class="tl" aria-label="Час доби"><li class=""><span></span>06:00</li><li class=""><span></span>09:00</li><li class="on" aria-current="step"><span></span>12:00</li><li class=""><span></span>15:00</li><li class=""><span></span>18:00</li><li class=""><span></span>21:00</li><li class=""><span></span>00:00</li></ol></div></div>
+<template class="notes">12:00 — МИ ЗМЕНШИЛИСЯ.
+Полудень: Сонце найвище за день, тіні найкоротші. Восени Сонце опівдні нижче, ніж улітку, тому тіні довші.
+Зараз ми «зменшимося» і зазирнемо всередину листка.</template></section>
+<section class="slide  th-dark" id="slide-12" data-sky="noon" data-title="ZOOM IN: заглядаємо в листок" aria-roledescription="слайд" aria-label="12 з 45: ZOOM IN: заглядаємо в листок" hidden>
+<div class="sheet"><h2 data-s>ZOOM IN: заглядаємо в листок</h2><ol class="zoom"><li data-s><figure class="ph " style="--tilt:-2deg"><img src="img/leaf-177.jpg" alt="Крок наближення: листок" loading="lazy"></figure><b class="tag tag-olive">листок</b></li><li data-s><figure class="ph " style="--tilt:1.5deg"><img src="img/leaf-178.jpg" alt="Крок наближення: ближче" loading="lazy"></figure><b class="tag tag-amber">ближче</b></li><li data-s><figure class="ph " style="--tilt:-1deg"><img src="img/leaf-180.jpg" alt="Крок наближення: ще ближче" loading="lazy"></figure><b class="tag tag-terra">ще ближче</b></li><li data-s><figure class="ph " style="--tilt:2deg"><img src="img/posterB.jpg" alt="Крок наближення: мікроскоп" loading="lazy"></figure><b class="tag tag-bordo">мікроскоп</b></li></ol></div>
+<template class="notes">ZOOM IN.
+Глядач ніби провалюється всередину листка: листок клена → ближче → ще ближче → під мікроскопом.
+Якщо є мікроскоп із камерою — виводьте зображення наживо. Якщо ні — наступний слайд з відео.
+Досліджуємо: поверхню листка, прожилки, видимі структури; також ґрунт і насіння.
+(Фото — наші: листок клена гостролистого та кадр з відео мікроскопа.)</template></section>
+<section class="slide  th-dark" id="slide-13" data-sky="noon" data-title="Ми дивилися на листок" aria-roledescription="слайд" aria-label="13 з 45: Ми дивилися на листок" hidden>
+<div class="sheet"><div class="split s-13"><div class="vid vid-tall" data-s><video controls preload="metadata" poster="img/posterB.jpg" aria-label="Відео: листок під мікроскопом"><source src="media/video-microscope.mp4" type="video/mp4"></video></div>
+<div class="col"><blockquote class="quote q-big q-dark" data-s>«Ми дивилися на листок. А тепер листок дивиться на нас»</blockquote>
+<p class="ask ask-light" data-s><span class="ic ic-terra lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"></path></svg></span>Прожилки, поверхня, клітинки</p></div></div></div>
+<template class="notes">ВІДЕО «ЛИСТОК ПІД МІКРОСКОПОМ» (1 хв 26 с, вертикальне, зі звуком — пояснює учителька).
+ЗАПУСК: клік по відео; ЗУПИНКА: ще один клік.
+Дитина: «Ми дивилися на листок. А тепер листок дивиться на нас».
+Що шукаємо: прожилки (як «дороги» для води), поверхню, дрібні клітинки.</template></section>
+<section class="slide  th-light" id="slide-14" data-sky="noon" data-title="Чиї це листки?" aria-roledescription="слайд" aria-label="14 з 45: Чиї це листки?" hidden>
+<div class="sheet"><h2 data-s>Лабораторія листка: чиї це листки?</h2><ul class="coll"><li data-s><figure class="ph " style="--tilt:-2.5deg"><img src="img/leaf-157.jpg" alt="Листок каштана, каштани і шкаралупа на лотку" loading="lazy"></figure><b>Каштан</b></li><li data-s><figure class="ph " style="--tilt:1.5deg"><img src="img/leaf-166.jpg" alt="Листок горіха і горіхи" loading="lazy"></figure><b>Горіх</b></li><li data-s><figure class="ph " style="--tilt:-1deg"><img src="img/leaf-172.jpg" alt="Гілочка берези з сережками" loading="lazy"></figure><b>Береза</b></li><li data-s><figure class="ph " style="--tilt:2.5deg"><img src="img/leaf-177.jpg" alt="Листок клена з крилатками" loading="lazy"></figure><b>Клен</b></li></ul></div>
+<template class="notes">КОЛАЖ 1. Зразки з нашого дослідження: листок + плоди дерева на одному лотку.
+• Каштан кінський — листок «долонькою» з 5–7 листочків, поруч каштани та колюча шкаралупа.
+• Горіх волоський — складний листок, поруч горіхи.
+• Береза — трикутні листки із зубчиками, поруч сережки.
+• Клен — лапчастий листок, поруч крилатки.
+Спершу запитайте: «Чий це листок? Як ви здогадалися?» Порівнюємо форму, колір, край, прожилки.</template></section>
+<section class="slide  th-light" id="slide-15" data-sky="noon" data-title="Порівнюємо листки" aria-roledescription="слайд" aria-label="15 з 45: Порівнюємо листки" hidden>
+<div class="sheet"><h2 data-s>Лабораторія листка: порівнюємо</h2><ul class="coll"><li data-s><figure class="ph " style="--tilt:-2.5deg"><img src="img/leaf-185.jpg" alt="Листки липи з горішками" loading="lazy"></figure><b>Липа</b></li><li data-s><figure class="ph " style="--tilt:1.5deg"><img src="img/leaf-192.jpg" alt="Гілка робінії зі стручками" loading="lazy"></figure><b>Робінія</b></li><li data-s><figure class="ph " style="--tilt:-1deg"><img src="img/leaf-196.jpg" alt="Два трикутні листки тополі" loading="lazy"></figure><b>Тополя</b></li><li data-s><figure class="ph " style="--tilt:2.5deg"><img src="img/leaf-200.jpg" alt="Листок гінкго у формі віяла" loading="lazy"></figure><b>Гінкго</b></li></ul></div>
+<template class="notes">КОЛАЖ 2.
+• Липа — листок-«сердечко», поруч горішки з крильцем-приквітком.
+• Робінія (у народі «біла акація») — складний листок із круглих листочків, поруч стручки.
+• Тополя — трикутний листок на довгому черешку.
+• Гінкго — листок-«віяло», дуже давня рослина.
+Питання: «Який листок найбільше схожий на серце? На віяло? На долоньку?»</template></section>
+<section class="slide  th-light" id="slide-16" data-sky="noon" data-title="Краї та прожилки" aria-roledescription="слайд" aria-label="16 з 45: Краї та прожилки" hidden>
+<div class="sheet"><h2 data-s>Подивись зблизька: краї та прожилки</h2><ul class="coll"><li data-s><figure class="ph " style="--tilt:2deg"><img src="img/leaf-174.jpg" alt="Береза: зубчики" loading="lazy"></figure><b>Береза:<br>зубчики</b></li><li data-s><figure class="ph " style="--tilt:-1.5deg"><img src="img/leaf-187.jpg" alt="Липа: сіточка прожилок" loading="lazy"></figure><b>Липа:<br>сіточка прожилок</b></li><li data-s><figure class="ph " style="--tilt:1deg"><img src="img/leaf-201.jpg" alt="Гінкго: прожилки віялом" loading="lazy"></figure><b>Гінкго:<br>прожилки віялом</b></li><li data-s><figure class="ph " style="--tilt:-2deg"><img src="img/leaf-165.jpg" alt="Каштан: жовтіє з країв" loading="lazy"></figure><b>Каштан:<br>жовтіє з країв</b></li></ul></div>
+<template class="notes">МАКРОФОТО (наші).
+Порівнюємо: край листка (з зубчиками чи гладкий), прожилки (сіточка, віяло, «ялинка»), колір.
+Береза — дрібні зубчики по краю. Липа — сіточка прожилок. Гінкго — прожилки розходяться віялом. Каштан — жовтіє й буріє нерівно.
+Питання: «Чим відрізняються краї?», «На що схожі прожилки?»</template></section>
+<section class="slide  th-light" id="slide-17" data-sky="noon" data-title="Насіння та плоди" aria-roledescription="слайд" aria-label="17 з 45: Насіння та плоди" hidden>
+<div class="sheet"><h2 data-s>Насіння та плоди: як вони подорожують?</h2><ul class="seeds"><li data-s><img src="img/circle-conker.png" alt="Каштани"><b>Каштани</b></li><li data-s><img src="img/circle-walnut.png" alt="Горіх"><b>Горіх</b></li><li data-s><img src="img/circle-samara.png" alt="Крилатки клена"><b>Крилатки клена</b></li><li data-s><img src="img/circle-linden.png" alt="Горішки липи"><b>Горішки липи</b></li><li data-s><img src="img/circle-pod.png" alt="Стручок робінії"><b>Стручок робінії</b></li></ul>
+<blockquote class="quote" data-s>Падає? Летить за вітром? Хтось переносить?</blockquote></div>
+<template class="notes">НАСІННЯ ТА ПЛОДИ (наші фото).
+Каштани важкі — падають під дерево. Горіхи часто переносять і ховають тварини (наприклад, сойки, білки). Крилатки клена кружляють на вітрі. Горішки липи мають крильце-приквіток — теж летять за вітром. Робінія — насіння в стручках.
+Питання: «Як ви думаєте, яке насіння полетить найдалі?» Можна підкинути крилатку в залі.</template></section>
+<section class="slide  th-dark" id="slide-18" data-sky="noon" data-title="Один листок — шість відкриттів" aria-roledescription="слайд" aria-label="18 з 45: Один листок — шість відкриттів" hidden>
+<div class="sheet"><h2 data-s>Один листок — шість відкриттів</h2><div class="orbit"><img class="orbit-c" src="img/circle-leaf159.png" alt="Листок каштана" data-s><ul><li data-s style="--a:-90deg"><span class="ic ic-amber lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M361.5 1.2c5 2.1 8.6 6.6 9.6 11.9L391 121l107.9 19.8c5.3 1 9.8 4.6 11.9 9.6s1.5 10.7-1.6 15.2L446.9 256l62.3 90.3c3.1 4.5 3.7 10.2 1.6 15.2s-6.6 8.6-11.9 9.6L391 391 371.1 498.9c-1 5.3-4.6 9.8-9.6 11.9s-10.7 1.5-15.2-1.6L256 446.9l-90.3 62.3c-4.5 3.1-10.2 3.7-15.2 1.6s-8.6-6.6-9.6-11.9L121 391 13.1 371.1c-5.3-1-9.8-4.6-11.9-9.6s-1.5-10.7 1.6-15.2L65.1 256 2.8 165.7c-3.1-4.5-3.7-10.2-1.6-15.2s6.6-8.6 11.9-9.6L121 121 140.9 13.1c1-5.3 4.6-9.8 9.6-11.9s10.7-1.5 15.2 1.6L256 65.1 346.3 2.8c4.5-3.1 10.2-3.7 15.2-1.6zM160 256a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zm224 0a128 128 0 1 0 -256 0 128 128 0 1 0 256 0z"></path></svg></span><b>світло</b></li><li data-s style="--a:-30deg"><span class="ic ic-water lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><path d="M192 512C86 512 0 426 0 320C0 228.8 130.2 57.7 166.6 11.7C172.6 4.2 181.5 0 191.1 0l1.8 0c9.6 0 18.5 4.2 24.5 11.7C253.8 57.7 384 228.8 384 320c0 106-86 192-192 192zM96 336c0-8.8-7.2-16-16-16s-16 7.2-16 16c0 61.9 50.1 112 112 112c8.8 0 16-7.2 16-16s-7.2-16-16-16c-44.2 0-80-35.8-80-80z"></path></svg></span><b>вода</b></li><li data-s style="--a:30deg"><span class="ic ic-olive lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M272 96c-78.6 0-145.1 51.5-167.7 122.5c33.6-17 71.5-26.5 111.7-26.5l88 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-16 0-72 0s0 0 0 0c-16.6 0-32.7 1.9-48.3 5.4c-25.9 5.9-49.9 16.4-71.4 30.7c0 0 0 0 0 0C38.3 298.8 0 364.9 0 440l0 16c0 13.3 10.7 24 24 24s24-10.7 24-24l0-16c0-48.7 20.7-92.5 53.8-123.2C121.6 392.3 190.3 448 272 448l1 0c132.1-.7 239-130.9 239-291.4c0-42.6-7.5-83.1-21.1-119.6c-2.6-6.9-12.7-6.6-16.2-.1C455.9 72.1 418.7 96 376 96L272 96z"></path></svg></span><b>пігменти</b></li><li data-s style="--a:90deg"><span class="ic ic-plum lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M288 32c0 17.7 14.3 32 32 32l32 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128c-17.7 0-32 14.3-32 32s14.3 32 32 32l320 0c53 0 96-43 96-96s-43-96-96-96L320 0c-17.7 0-32 14.3-32 32zm64 352c0 17.7 14.3 32 32 32l32 0c53 0 96-43 96-96s-43-96-96-96L32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0c-17.7 0-32 14.3-32 32zM128 512l32 0c53 0 96-43 96-96s-43-96-96-96L32 320c-17.7 0-32 14.3-32 32s14.3 32 32 32l128 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0c-17.7 0-32 14.3-32 32s14.3 32 32 32z"></path></svg></span><b>повітря</b></li><li data-s style="--a:150deg"><span class="ic ic-bordo lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M166.83 19.52c-28.898.023-61.718 16.366-86.002 55.16 70.773-24.38 69.905 19.077 130.02 36.95 12.785 18.24 21.513 41.086 27.45 72.214 1.056 9.14 1.425 18.935 1.495 29.078.16 23.53-1.74 48.726-3.072 69.72v.008c-.405 6.982 2.976 17.98 9.282 29.364 2.745 4.956 6.048 9.978 9.584 14.9 2.945-59.286 1.044-113.128 11.27-161.432 7.12-19.412 16.723-35.71 28.833-49.156 67.6-14.804 59.14-58.506 140.966-33.137-32.607-39-72.186-55.092-104.357-54.516-43.914.786-74.014 32.628-53.743 79.654-11.398 13.628-20.738 29.502-27.87 47.6-5.473-19.157-12.575-35.512-21.55-49.703 14.37-51.287-19.7-86.736-62.307-86.704zm35.234 169.918l-75.488 1.767-69.416 94.99 72.125 67.22 89.992-8.677-89.04 36.268-57.38-54.893 37.702 84.155 110.41 28.816-99.382-4.197 5.566 12.425L294.17 494.85 422 423.97v-.01l-31.676-45.116-94.816 42.367 99.135-72.116 28.097 41.947 1.78-79.19-66.54-78.248-55.644-12.608-24.406 36.445 6.95 26.154-9.353 14.8c-.525 15.73-1.216 31.995-2.38 48.768l23.2 32.524-36.1 41.71 15.515 31.862-37.116-35.465 33.95-39.223-11.094-15.55-4.88-5.268c-10.016-10.814-19.717-23.594-26.968-36.682-4.9-8.843-8.81-17.798-10.6-26.716l-18.118-36.536L216.27 217.8l.554-.048-14.76-28.315z"></path></svg></span><b>ґрунт</b></li><li data-s style="--a:210deg"><span class="ic ic-terra lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M216.4 18.66c-3 35.94 12.6 64.01 28.1 88.94 15.5 24.9 30.6 47 32.2 72.3 1.2 17.3-4.6 34.5-11.5 53-6.9 18.6-14.8 38.4-15.5 60.9l18 .6c.5-18.5 7.4-36.4 14.4-55.2 6.9-18.8 14-38.5 12.6-60.5-2-31.5-19.8-56.3-35-80.65-15.1-24.34-27.9-47.81-25.3-77.87l-18-1.52zm134.2 9.52c-18.7 10.56-39.1 23.47-52.1 37.64-7.9 8.63-12.8 17.38-13.9 25.86-1 7.53.8 15.42 7.3 24.72 20.2-.7 35.3-13.8 45.7-33.24 8.9-16.54 13.3-37.15 13-54.98zM141.7 97.64c-1.1.01-2.2.04-3.2.07-5.7.18-11 .73-15.9 1.49 10.5 16.8 30.5 35.8 52.2 46.8 13.1 6.6 26.6 10.4 38.8 10.1 10.8-.2 20.4-3.5 29-10.9-1.6-8.6-6.2-15.9-13.9-22.5-8.8-7.5-21.4-13.7-35.5-18-15.4-4.7-32.6-6.92-48.2-7.06-1.1-.01-2.2-.01-3.3 0zM347.5 208.2c-2.1.1-4.1.3-6.1.5-14.2 1.8-26.1 8-34.8 22.2 3.8 3.9 8.1 6 13.1 7 6.6 1.3 14.7.4 23.2-2.5 12.7-4.2 26.3-12.8 36.8-22-10-3.3-20.5-5.2-30.3-5.2h-1.9zM32 311v18h204.3c-1.1 7.3-2.8 17.7-5.5 28.8-5 21-14.4 44.1-24.2 51.7-12.5 9.6-29.8 10.2-49.6 7.9-3.8-2.4-14.6-9.6-25.1-18.9-6.4-5.6-12.4-12-16-17.6-3.6-5.7-4.3-9.8-3.5-12.4-.1.6-.1 0 2.2-.9 2.4-.9 6.2-1.7 10.1-2 7.8-.7 15.5 0 15.5 0l1.6-18s-2.2-.2-5.6-.3c-3.5-.1-8.1-.1-13 .3-4.9.5-10.1 1.3-15.1 3.2-4.9 1.9-10.55 5.4-12.74 12.1-3.25 9.8.24 19.5 5.34 27.6 4.9 7.9 11.9 15 19 21.2-13.6-1.9-27.53-3.1-40.68-1-3.49-6.9-7.94-14.2-15.19-20.1-8.92-7.3-21.63-11.8-39.25-12.2l-.38 18c14.84.3 22.78 3.7 28.25 8.2 3.71 3 6.49 6.9 9.04 11.4-3.48 1.7-6.87 3.7-10.13 6.1-10.6 7.9-14.53 20.9-17.66 32.2-3.13 11.2-4.44 21-4.44 21l17.84 2.4s1.18-8.7 3.94-18.6c2.74-9.8 8.09-20.4 11.06-22.6 16.99-12.6 42.6-9.1 71.1-4.4 28.4 4.7 60 10.4 84.4-8.4 8-6.2 13.9-14.9 18.6-24.6 4.8 10.5 11.7 19.6 20 27.5-10.7 2.7-20 7.5-28.1 13.3-13.4 9.7-24 21.7-34.8 31.5l12 13.4c8-7.3 15.3-14.8 22.6-21.4 4.1 7.3 9.9 13.1 16.4 17.3 10.4 6.8 22.2 10.3 33 12.9l4.2-17.4c-10-2.5-20-5.7-27.3-10.5-5.5-3.6-9.6-7.7-12-13.6 10.1-6.5 20.8-10.4 35.4-9.6 6.5 3.7 13.3 7 20.3 9.8 26.6 10.5 56.4 14.4 82.5 12 16.4-1.6 32.8-11 47.4-22 6.6 5.3 12 11.7 15.7 18 5.3 9 6.5 17.7 5.3 21.6l17 5.6c4-11.7.2-24.5-6.8-36.4-4.3-7.2-9.9-14.1-16.8-20.3.1 0 .1-.1.2-.1 18-15.1 31.3-29.8 31.3-29.8l-13.2-12.2s-12.8 13.9-29.7 28.2c-17 14.3-38.8 28.2-52 29.4-23 2.2-50.6-1.4-74.3-10.8-23.6-9.3-43-24.2-51.9-43.8-2.6-5.7.7-22 7.1-36 3-6.6 6.2-12.5 8.8-17 3.8 2 8.1 4.4 12.9 7.2 13 7.6 27.9 18 34.1 25.5 4.6 5.5 10.6 18.6 14.7 29.7 4.1 11.2 6.7 20.5 6.7 20.5l17.4-4.8s-2.8-10-7.2-21.9c-2.8-7.9-6.2-16.5-10.5-24.2 4.1-.6 9.5-.6 15.7.6 12.2 2.4 26.8 8.5 39 17.5l10.6-14.6c-14.5-10.5-31-17.6-46.2-20.5-5.7-1.1-11.3-1.8-16.7-1.6-5.1.1-9.9 1-14.2 2.8-9.5-9.3-22.6-17.6-34.2-24.5-.8-.5-1.6-.9-2.4-1.4H480v-18H32z"></path></svg></span><b>коріння</b></li></ul></div></div>
+<template class="notes">ПІДСУМОК ЛАБОРАТОРІЇ ЛИСТКА: «Один листок — шість відкриттів».
+За одним звичайним листком стоять: світло, вода, пігменти, повітря, ґрунт і коріння.
+Команда показує зразки ґрунту (сухий, вологий, з різних місць) під лупою/мікроскопом і розповідає, навіщо рослині коріння (тримає рослину, вбирає воду).</template></section>
+<section class="slide  th-light" id="slide-19" data-sky="afternoon" data-title="Прогноз перед дослідом" aria-roledescription="слайд" aria-label="19 з 45: Прогноз перед дослідом" hidden>
+<div class="sheet"><h2 data-s>Прогноз перед дослідом</h2><div class="split s-19"><div class="timer" data-s><span class="ic ic-terra xxl" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M176 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l16 0 0 34.4C92.3 113.8 16 200 16 304c0 114.9 93.1 208 208 208s208-93.1 208-208c0-41.8-12.3-80.7-33.5-113.2l24.1-24.1c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L355.7 143c-28.1-23-62.2-38.8-99.7-44.6L256 64l16 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L224 0 176 0zm72 192l0 128c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-128c0-13.3 10.7-24 24-24s24 10.7 24 24z"></path></svg></span><b>30–60 секунд</b></div>
+<div class="col"><p class="big-q" data-s>Як ти думаєш, що станеться?</p><ul class="dots dark-dots" data-s><li>Скажи свій прогноз</li><li>Подивимось дослід</li><li>Порівняємо: збіглося?</li></ul></div></div></div>
+<template class="notes">«ПРОГНОЗ ПЕРЕД ДОСЛІДОМ» — 30–60 секунд.
+Перед кожним дослідом діти швидко кажуть, що, на їхню думку, станеться. Потім перевіряємо і порівнюємо очікування з результатом.
+Готових відповідей не даємо.</template></section>
+<section class="slide slide-scene th-dark" id="slide-20" data-sky="afternoon" data-title="15:00 Чи можна побачити вітер?" aria-roledescription="слайд" aria-label="20 з 45: 15:00 Чи можна побачити вітер?" hidden>
+<div class="sheet"><div class="scene"><img class="scene-img" src="img/scene-15.jpg" alt="Наше дерево і будиночок о 15:00">
+<div class="clock" data-s>15:00</div><div class="glass g-left" data-s><h2>Чи можна побачити вітер?</h2></div><div class="scene-snd s-left" data-s><button class="snd snd-plum" data-src="media/wind.mp3" aria-label="Увімкнути звук: Вітер" aria-pressed="false"><span class="snd-b"><svg fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"></path></svg></span><span class="snd-l">Вітер</span></button></div><ol class="tl" aria-label="Час доби"><li class=""><span></span>06:00</li><li class=""><span></span>09:00</li><li class=""><span></span>12:00</li><li class="on" aria-current="step"><span></span>15:00</li><li class=""><span></span>18:00</li><li class=""><span></span>21:00</li><li class=""><span></span>00:00</li></ol></div></div>
+<template class="notes">15:00 — ВІТЕР.
+ЗВУК: кнопка «Вітер» (вітер у лісі, ≈40 с, плавно наростає). Дати послухати 15–20 с, потім клік — стоп.
+Питання: «Чи можна побачити вітер?»
+Діти демонструють безпечну візуалізацію руху повітря (стрічки, пір’їнка, листок).
+Завдання залу: «ПОКАЖІТЬ БЕЗ СЛІВ, ЯК РУХАЄТЬСЯ ВІТЕР».
+Звук: «Wind in forest (Gravity Sound)», CC BY 4.0, Wikimedia Commons.</template></section>
+<section class="slide  th-light" id="slide-21" data-sky="afternoon" data-title="Повітря невидиме, але воно є" aria-roledescription="слайд" aria-label="21 з 45: Повітря невидиме, але воно є" hidden>
+<div class="sheet"><h2 data-s>Повітря невидиме, але воно є</h2><div class="pair" data-s><figure class="ph " style="--tilt:-1.5deg"><img src="img/exp-glass.jpg" alt="Схема: склянка з серветкою у воді, серветка суха" loading="lazy"></figure><figure class="ph " style="--tilt:1.5deg"><img src="img/exp-ribbons.jpg" alt="Схема: стрічки рухаються від вітру" loading="lazy"></figure></div>
+<blockquote class="quote" data-s>«Ми не бачимо повітря. Але бачимо його дію»</blockquote></div>
+<template class="notes">ЛАБОРАТОРІЯ ПОВІТРЯ.
+Дослід 1 — повітря займає місце: перевернуту склянку з серветкою на дні опускаємо у воду рівно, дном догори — серветка залишається сухою, бо в склянці повітря.
+Дослід 2 — повітря рухається: паперові стрічки / легкі предмети + вітер (або віяло) — стрічки рухаються.
+Пояснити: повітря буває тепле й холодне; тепле піднімається, холодне опускається — так виникає вітер.
+Ключова фраза: «Ми не бачимо повітря. Але можемо побачити його дію».
+Малюнки — навчальні схеми.</template></section>
+<section class="slide slide-cold th-dark" id="slide-22" data-sky="cold" data-title="15:17 Temperature drop" aria-roledescription="слайд" aria-label="22 з 45: 15:17 Temperature drop" hidden>
+<div class="sheet"><div class="drop"><div class="col"><p class="t1517" data-s>15:17</p><p class="tdrop" data-s>TEMPERATURE DROP</p>
+<p class="stop" data-s>Стоп! Температура різко впала.</p><p class="stop stop-y" data-s>Що станеться з природою?</p><p class="pill-ice" data-s>30 секунд на прогноз</p></div>
+<div class="therm" data-s><svg fill="currentColor" viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><path d="M128 112c0-26.5 21.5-48 48-48s48 21.5 48 48l0 164.5c0 17.3 7.1 31.9 15.3 42.5C249.8 332.6 256 349.5 256 368c0 44.2-35.8 80-80 80s-80-35.8-80-80c0-18.5 6.2-35.4 16.7-48.9c8.2-10.6 15.3-25.2 15.3-42.5L128 112zM176 0C114.1 0 64 50.1 64 112l0 164.4c0 .1-.1 .3-.2 .6c-.2 .6-.8 1.6-1.7 2.8C43.2 304.2 32 334.8 32 368c0 79.5 64.5 144 144 144s144-64.5 144-144c0-33.2-11.2-63.8-30.1-88.1c-.9-1.2-1.5-2.2-1.7-2.8c-.1-.3-.2-.5-.2-.6L288 112C288 50.1 237.9 0 176 0zm0 416c26.5 0 48-21.5 48-48c0-20.9-13.4-38.7-32-45.3l0-50.7c0-8.8-7.2-16-16-16s-16 7.2-16 16l0 50.7c-18.6 6.6-32 24.4-32 45.3c0 26.5 21.5 48 48 48zm336-64l-32 0 0-288c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 288-32 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l64 64c6 6 14.1 9.4 22.6 9.4s16.6-3.4 22.6-9.4l64-64c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8z"></path></svg></div></div></div>
+<template class="notes">15:17 — НЕСПОДІВАНИЙ ПОВОРОТ (ігрова ситуація, не реальна подія).
+Перед цим слайдом зупиніть звук вітру — «звук обривається».
+Ведучий: «Стоп. У нас змінилися умови. Температура різко впала. Як це вплине на те, що ми щойно досліджували?»
+«Що станеться з природою, якщо температура зміниться?»
+Дітям — 30 секунд на прогноз, потім перевіряють (напр., холодна склянка → конденсат; листок на холоді).
+Важливо не давати готову відповідь, а змусити мислити.</template></section>
+<section class="slide  th-light" id="slide-23" data-sky="afternoon" data-title="Подорож краплі" aria-roledescription="слайд" aria-label="23 з 45: Подорож краплі" hidden>
+<div class="sheet"><h2 data-s>Подорож краплі: звідки взялася вода?</h2><div class="split s-23"><figure class="ph " style="--tilt:-1.5deg"><img src="img/cond.jpg" alt="Краплі конденсату на холодному склі" loading="lazy"></figure>
+<div class="col"><figure class="ph " style="--tilt:2deg"><img src="img/web.jpg" alt="Велика крапля води на павутині" loading="lazy"></figure><p class="say say-w" data-s>Холодне скло → краплі</p><p class="say say-r" data-s>Чому?</p></div></div>
+<p class="credit" data-s>Фото: «Condensate.jpg», Mia Primavera, CC0; «Big Water Droplet on spider web», Simone Bissi, CC BY-SA 4.0 (Wikimedia Commons)</p></div>
+<template class="notes">ЛАБОРАТОРІЯ ВОДИ: «Подорож краплі».
+Дослід наживо: налийте в склянку/пляшку холодну воду (або охолодіть її) і спостерігайте, як ЗЗОВНІ з’являються краплі.
+Питання: «Звідки взялася ця вода?» Нехай діти самі дійдуть: у повітрі є невидима водяна пара; на холодній поверхні вона перетворюється на краплі — це конденсація. Так само утворюється роса вранці.
+Покладіть краплю води на прозору поверхню і покажіть її під макрокамерою — «крапля як цілий світ».
+Фото — приклади з Wikimedia Commons (не наші досліди).</template></section>
+<section class="slide  th-light" id="slide-24" data-sky="afternoon" data-title="Кругообіг води" aria-roledescription="слайд" aria-label="24 з 45: Кругообіг води" hidden>
+<div class="sheet"><h2 data-s>Кругообіг води</h2><div class="split s-24"><div data-s><figure class="ph " style="--tilt:-1deg"><img src="img/water-cycle.jpg" alt="Схема кругообігу води: сонце гріє воду, вода випаровується, утворюється хмара, дощ, вода повертається в море" loading="lazy"></figure></div>
+<div class="col"><button class="snd snd-water" data-src="media/rain.mp3" aria-label="Увімкнути звук: Дощ" aria-pressed="false"><span class="snd-b"><svg fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"></path></svg></span><span class="snd-l">Дощ</span></button><p class="say" data-s>Як ще назвати дощ?</p><ul class="rainwords" data-s><li>мряка</li><li>злива</li><li>дощик</li><li>грибний дощ</li></ul></div></div></div>
+<template class="notes">КРУГООБІГ ВОДИ.
+1. Сонце гріє воду. 2. Вода випаровується (стає невидимою парою). 3. Пара охолоджується вгорі — утворюється хмара. 4. Йде дощ. 5. Вода по річках повертається в море.
+ЗВУК: кнопка «Дощ» — дощ по листю, ≈45 с. Слухати 15–20 с, далі клік — стоп. Питання: «Який це дощ — злива чи мряка?»
+Гра: «Як ще назвати дощ?» — мряка, злива, дощик, грибний дощ, дощ як із відра… (Відповіді на слайді можна закрити рукою/показати після відповідей дітей.)
+Команда показує свою модель кругообігу.
+Звук: «Rain on leaves (Gravity Sound)», CC BY 4.0, Wikimedia Commons.</template></section>
+<section class="slide  th-light" id="slide-25" data-sky="afternoon" data-title="Протягом доби: ранок, день, вечір" aria-roledescription="слайд" aria-label="25 з 45: Протягом доби: ранок, день, вечір" hidden>
+<div class="sheet"><h2 data-s>Протягом доби: ранок → день → вечір</h2><div class="charts2">
+<figure class="chart" data-s data-chart="bar" data-color="amber" data-title="15 жовтня: ясно, без дощу" data-labels="06:00,09:00,12:00,15:00,18:00,21:00" data-values="7.7,7.5,12.1,13.0,12.1,11.1"></figure>
+<figure class="chart" data-s data-chart="bar" data-color="water" data-title="18 жовтня: дощ і гроза" data-labels="06:00,09:00,12:00,15:00,18:00,21:00" data-values="9.2,9.7,12.0,13.1,13.7,13.8"></figure></div>
+<blockquote class="quote" data-s>Зазвичай удень тепліше, ніж уранці. Але не завжди!</blockquote>
+<p class="src" data-s>Температура повітря, °C, Одеса. Архівні дані Open-Meteo (модельні розрахунки), не наші спостереження.</p></div>
+<template class="notes">МЕТЕОСТАНЦІЯ: ЗМІНИ ПРОТЯГОМ ДОБИ.
+Дані: Open-Meteo, Одеса (46.48° пн. ш., 30.72° сх. д.), температура повітря на висоті 2 м, щогодинні значення. Це архівні модельні дані, а НЕ виміри дітей.
+15 жовтня (без дощу): о 06:00 — 7,7°, найхолодніше було близько 08:00 (7,2°), найтепліше — о 15:00 (13,0°). Звичайна картина: вночі й зранку прохолодно, вдень тепліше.
+18 жовтня (дощ, гроза — 22,7 мм опадів): зранку 9,2°, а найтепліше — увечері (13,8° о 21:00). Тобто вдень не завжди тепліше: погода (хмари, дощ, вітер) усе змінює.
+Питання: «Коли було найхолодніше? Чому 18 жовтня все інакше?»
+Якщо діти вели власні записи на ватмані (ранок/день/вечір) — покажіть їх поруч і порівняйте.</template></section>
+<section class="slide  th-light" id="slide-26" data-sky="afternoon" data-title="Найвища температура дня: 10–22 жовтня" aria-roledescription="слайд" aria-label="26 з 45: Найвища температура дня: 10–22 жовтня" hidden>
+<div class="sheet"><h2 data-s>Найвища температура дня: 10–22 жовтня</h2><div class="split s-26">
+<figure class="chart chart-line" data-s data-chart="line" data-labels="10,11,12,13,14,15,16,17,18,19,20,21,22" data-values="19.0,18.6,19.7,14.8,13.2,13.0,12.0,11.5,14.0,15.1,,," data-hot="2" data-cold="7"></figure>
+<div class="col"><div class="kpi kpi-hot" data-s><span>Найтепліше</span><b>12 жовтня: 19,7°</b></div><div class="kpi kpi-cold" data-s><span>Найхолодніше</span><b>17 жовтня: 11,5°</b></div>
+<p class="say say-sm" data-s>Коли було найтепліше? Як змінилася температура?</p></div></div>
+<p class="src" data-s>Одеса, 2026. Найвища температура повітря за добу, °C. Архівні дані Open-Meteo (модельні), станом на 19.10. 20–22.10 ще не настали.</p></div>
+<template class="notes">ГРАФІК 10–22 ЖОВТНЯ.
+Що показано: найвища температура повітря за добу (денний максимум), Одеса, 2026 рік. Один тип вимірювань для всіх днів.
+Джерело: Open-Meteo (архів / модельний аналіз погоди, api.open-meteo.com), отримано 19.10.2026. Це НЕ спостереження дітей.
+19.10 — день ще не завершився на момент підготовки, значення може трохи уточнитися.
+20, 21 і 22 жовтня — порожні, бо ці дні ще не настали. У день конференції можна дописати їх від руки або оновити дані.
+Висновок за реальними даними: 10–12 жовтня було тепло (до 19,7°), з 13 жовтня різко похолоднішало, найхолодніший день — 17 жовтня (11,5°), потім знову трохи потеплішало.
+Питання: «Коли було найтепліше?», «Як змінилася температура за ці дні?»
+Шкала починається з 0°, щоб не перебільшувати зміни.</template></section>
+<section class="slide  th-light" id="slide-27" data-sky="afternoon" data-title="Як осінь змінюється за тижні" aria-roledescription="слайд" aria-label="27 з 45: Як осінь змінюється за тижні" hidden>
+<div class="sheet"><h2 data-s>Як осінь змінюється за тижні</h2><ul class="weeks"><li data-s><span class="ic ic-amber lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M256 0a256 256 0 1 1 0 512A256 256 0 1 1 256 0zM232 120l0 136c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2 280 120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"></path></svg></span><b>День коротшає</b><p>22 вересня:<br>12 год 12 хв світла<br>22 жовтня:<br>10 год 34 хв</p></li><li data-s><span class="ic ic-terra lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M272 96c-78.6 0-145.1 51.5-167.7 122.5c33.6-17 71.5-26.5 111.7-26.5l88 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-16 0-72 0s0 0 0 0c-16.6 0-32.7 1.9-48.3 5.4c-25.9 5.9-49.9 16.4-71.4 30.7c0 0 0 0 0 0C38.3 298.8 0 364.9 0 440l0 16c0 13.3 10.7 24 24 24s24-10.7 24-24l0-16c0-48.7 20.7-92.5 53.8-123.2C121.6 392.3 190.3 448 272 448l1 0c132.1-.7 239-130.9 239-291.4c0-42.6-7.5-83.1-21.1-119.6c-2.6-6.9-12.7-6.6-16.2-.1C455.9 72.1 418.7 96 376 96L272 96z"></path></svg></span><b>Листя жовтіє</b><p>Зелений пігмент руйнується — стає видно жовтий і оранжевий</p></li><li data-s><span class="ic ic-water lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M160.8 96.5c14 17 31 30.9 49.5 42.2c25.9 15.8 53.7 25.9 77.7 31.6l0-31.5C265.8 108.5 250 71.5 248.6 28c-.4-11.3-7.5-21.5-18.4-24.4c-7.6-2-15.8-.2-21 5.8c-13.3 15.4-32.7 44.6-48.4 87.2zM320 144l0 30.6s0 0 0 0l0 1.3s0 0 0 0l0 32.1c-60.8-5.1-185-43.8-219.3-157.2C97.4 40 87.9 32 76.6 32c-7.9 0-15.3 3.9-18.8 11C46.8 65.9 32 112.1 32 176c0 116.9 80.1 180.5 118.4 202.8L11.8 416.6C6.7 418 2.6 421.8 .9 426.8s-.8 10.6 2.3 14.8C21.7 466.2 77.3 512 160 512c3.6 0 7.2-1.2 10-3.5L245.6 448l74.4 0c88.4 0 160-71.6 160-160l0-160 29.9-44.9c1.3-2 2.1-4.4 2.1-6.8c0-6.8-5.5-12.3-12.3-12.3L400 64c-44.2 0-80 35.8-80 80zm80-16a16 16 0 1 1 0 32 16 16 0 1 1 0-32z"></path></svg></span><b>Птахи відлітають</b><p>Комах і жаб стає менше — частина птахів летить у теплі краї</p></li></ul>
+<p class="src" data-s>Тривалість дня: Open-Meteo, Одеса (схід/захід Сонця 22.09: 06:43/18:55; 22.10: 07:24/17:58).</p></div>
+<template class="notes">ЗМІНИ ЗА ТИЖНІ (сезонні) — НЕ плутати зі змінами протягом доби.
+Протягом доби змінюються світло, температура, активність тварин — за години.
+Протягом тижнів (осінь): дні коротшають, листя змінює колір і опадає, перелітні птахи відлітають.
+Дані про тривалість дня в Одесі (Open-Meteo): 22 вересня — 12 год 12 хв, 22 жовтня — 10 год 34 хв. За місяць день став коротшим більш ніж на півтори години.
+Листя: восени листок перестає виробляти хлорофіл, зелений колір зникає — і стають видимими жовті та оранжеві пігменти, які були там і раніше.</template></section>
+<section class="slide  th-dark" id="slide-28" data-sky="afternoon" data-title="Метеостудія" aria-roledescription="слайд" aria-label="28 з 45: Метеостудія" hidden>
+<div class="sheet"><h2 data-s>Метеостудія: прогноз на 22 жовтня</h2><div class="studio">
+<div class="col"><p class="studio-tag" data-s><span>ПРОГНОЗ</span> Одеса</p><div class="studio-t" data-s><svg fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M0 336c0 79.5 64.5 144 144 144l368 0c70.7 0 128-57.3 128-128c0-61.9-44-113.6-102.4-125.4c4.1-10.7 6.4-22.4 6.4-34.6c0-53-43-96-96-96c-19.7 0-38.1 6-53.3 16.2C367 64.2 315.3 32 256 32C167.6 32 96 103.6 96 192c0 2.7 .1 5.4 .2 8.1C40.2 219.8 0 273.2 0 336z"></path></svg><b>+15°</b></div><p class="studio-c" data-s>хмарно</p></div>
+<div class="col"><p class="wline" data-s><span class="ic ic-water md" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><path d="M288 0c17.7 0 32 14.3 32 32l0 17.7C451.8 63.4 557.7 161 573.9 285.9c2 15.6-17.3 24.4-27.8 12.7C532.1 283 504.8 272 480 272c-38.7 0-71 27.5-78.4 64.1c-1.7 8.7-8.7 15.9-17.6 15.9s-15.8-7.2-17.6-15.9C359 299.5 326.7 272 288 272s-71 27.5-78.4 64.1c-1.7 8.7-8.7 15.9-17.6 15.9s-15.8-7.2-17.6-15.9C167 299.5 134.7 272 96 272c-24.8 0-52.1 11-66.1 26.7C19.4 310.4 .1 301.5 2.1 285.9C18.3 161 124.2 63.4 256 49.7L256 32c0-17.7 14.3-32 32-32zm0 304c12.3 0 23.5 4.6 32 12.2l0 114.3c0 45-36.5 81.4-81.4 81.4c-30.8 0-59-17.4-72.8-45l-2.3-4.7c-7.9-15.8-1.5-35 14.3-42.9s35-1.5 42.9 14.3l2.3 4.7c3 5.9 9 9.6 15.6 9.6c9.6 0 17.4-7.8 17.4-17.4l0-114.3c8.5-7.6 19.7-12.2 32-12.2z"></path></svg></span>Дощ: малоймовірний</p><p class="wline" data-s><span class="ic ic-plum md" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M288 32c0 17.7 14.3 32 32 32l32 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128c-17.7 0-32 14.3-32 32s14.3 32 32 32l320 0c53 0 96-43 96-96s-43-96-96-96L320 0c-17.7 0-32 14.3-32 32zm64 352c0 17.7 14.3 32 32 32l32 0c53 0 96-43 96-96s-43-96-96-96L32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0c-17.7 0-32 14.3-32 32zM128 512l32 0c53 0 96-43 96-96s-43-96-96-96L32 320c-17.7 0-32 14.3-32 32s14.3 32 32 32l128 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0c-17.7 0-32 14.3-32 32s14.3 32 32 32z"></path></svg></span>Вітер: слабкий</p>
+<div class="studio-q" data-s><p>Чи потрібна парасолька?</p><p>Як сьогодні одягнутися?</p></div></div></div>
+<p class="src" data-s>Прогноз Open-Meteo для Одеси, станом на 19.10.2026: удень до +15,6°, вночі +14,5°, ймовірність опадів 9%, вітер до 15 км/год (≈4 м/с), південно-східний. Перевірте вранці 22.10.</p></div>
+<template class="notes">МЕТЕОСТУДІЯ — дитина-ведуча прогнозу.
+Дитина: «Добрий день! Ви дивитеся дитячу метеостудію. Сьогодні, 22 жовтня, в Одесі…»
+Це ПРОГНОЗ (що, можливо, буде), а не спостереження (що вже було) — графік на попередніх слайдах показує те, що вже було.
+Джерело: Open-Meteo (api.open-meteo.com), прогноз для Одеси, отриманий 19.10.2026: максимум +15,6°C, мінімум +14,5°C, хмарно (код погоди 3 — суцільна хмарність), ймовірність опадів 9%, макс. вітер 14,6 км/год (≈4 м/с), напрямок ~120° (південно-східний).
+УВАГА: прогноз на 3 дні вперед може змінитися — уранці 22.10 перевірте й за потреби виправте цифри на слайді.
+Питання до залу: «Чи потрібна сьогодні парасолька?» (За цим прогнозом — найімовірніше, ні.) «Як одягнутися?» (Тепла куртка або светр.)</template></section>
+<section class="slide slide-scene th-dark" id="slide-29" data-sky="dusk" data-title="18:00 Сутінки" aria-roledescription="слайд" aria-label="29 з 45: 18:00 Сутінки" hidden>
+<div class="sheet"><div class="scene"><img class="scene-img" src="img/scene-18.jpg" alt="Наше дерево і будиночок о 18:00">
+<div class="clock" data-s>18:00</div><div class="glass g-left" data-s><h2>Сутінки</h2><ul class="dots"><li>Сонце сідає: 22.10 — о 17:58</li><li>Стає темніше і прохолодніше</li><li>Птахи летять на ночівлю</li></ul></div><ol class="tl" aria-label="Час доби"><li class=""><span></span>06:00</li><li class=""><span></span>09:00</li><li class=""><span></span>12:00</li><li class=""><span></span>15:00</li><li class="on" aria-current="step"><span></span>18:00</li><li class=""><span></span>21:00</li><li class=""><span></span>00:00</li></ol></div></div>
+<template class="notes">18:00 — СУТІНКИ.
+Проекція темнішає, на екрані — захід сонця. 22 жовтня в Одесі Сонце сідає о 17:58 (Open-Meteo), тож о 18:00 воно щойно сховалося.
+Увечері часто прохолодніше, ніж удень (але не завжди — згадайте 18 жовтня).
+Багато птахів збираються зграями і летять на ночівлю.
+Далі — сенсорна лабораторія «Запах осені».</template></section>
+<section class="slide  th-light" id="slide-30" data-sky="dusk" data-title="Чи має осінь запах?" aria-roledescription="слайд" aria-label="30 з 45: Чи має осінь запах?" hidden>
+<div class="sheet"><h2 data-s>Чи має осінь запах?</h2><ul class="smell"><li data-s><span class="ic ic-bordo lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M166.83 19.52c-28.898.023-61.718 16.366-86.002 55.16 70.773-24.38 69.905 19.077 130.02 36.95 12.785 18.24 21.513 41.086 27.45 72.214 1.056 9.14 1.425 18.935 1.495 29.078.16 23.53-1.74 48.726-3.072 69.72v.008c-.405 6.982 2.976 17.98 9.282 29.364 2.745 4.956 6.048 9.978 9.584 14.9 2.945-59.286 1.044-113.128 11.27-161.432 7.12-19.412 16.723-35.71 28.833-49.156 67.6-14.804 59.14-58.506 140.966-33.137-32.607-39-72.186-55.092-104.357-54.516-43.914.786-74.014 32.628-53.743 79.654-11.398 13.628-20.738 29.502-27.87 47.6-5.473-19.157-12.575-35.512-21.55-49.703 14.37-51.287-19.7-86.736-62.307-86.704zm35.234 169.918l-75.488 1.767-69.416 94.99 72.125 67.22 89.992-8.677-89.04 36.268-57.38-54.893 37.702 84.155 110.41 28.816-99.382-4.197 5.566 12.425L294.17 494.85 422 423.97v-.01l-31.676-45.116-94.816 42.367 99.135-72.116 28.097 41.947 1.78-79.19-66.54-78.248-55.644-12.608-24.406 36.445 6.95 26.154-9.353 14.8c-.525 15.73-1.216 31.995-2.38 48.768l23.2 32.524-36.1 41.71 15.515 31.862-37.116-35.465 33.95-39.223-11.094-15.55-4.88-5.268c-10.016-10.814-19.717-23.594-26.968-36.682-4.9-8.843-8.81-17.798-10.6-26.716l-18.118-36.536L216.27 217.8l.554-.048-14.76-28.315z"></path></svg></span><b>мокра земля</b></li><li data-s><span class="ic ic-terra lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M255.563 19.75c-13.31 57.822-16.625 100.686-13.907 156.938l18.813.03c3.31-49.616 18.56-88.618 45.874-133-4.86-9.134-13.465-14.956-23.813-18.78-8.908-3.293-18.82-4.77-26.967-5.188zm98.75 94.156c-9.067.133-18.416 1.204-28 3.313-13.76 3.026-27.176 7.952-39.97 14.56-3.905 14.615-6.346 29.844-7.406 46.595 1.25-.216 2.51-.432 3.75-.688 24.965-5.135 43.288-17.244 52.344-32.25-.298 19.943-25.12 41.175-56.81 49.97-2.525.7-5.086 1.34-7.69 1.874-44.29 9.114-85.27-8.315-99.842-35.343-4.366-8.097-5.176-16.436-3.094-24.343 9.834 17.98 30.633 31.534 55.25 38.156-.748-16.246-.974-31.515-.625-46.406-11.004-4.878-22.38-8.548-33.97-10.875-11.18-2.246-22.044-3.414-32.094-3.064-71.757 2.496-132.96 64.885-131.78 154.688C25.73 373.264 101.85 472.424 190 490.124c11.178 2.246 24.934 3.42 37.22 2.282 12.283-1.138 22.775-4.762 28.405-10.156l5.97-5.72 6.405 5.25c5.378 4.426 16.542 8.05 29.125 9.22 12.583 1.17 26.514.195 37.344-2.188 87.533-19.257 153.047-119.08 151.686-222.718-.677-51.615-19.354-93.606-48.22-120.22-21.647-19.96-48.954-31.508-79.748-31.968-1.284-.02-2.58-.02-3.875 0zm49.906 41.125c53.69 32.478 75.357 115.23 37.092 200.626-30.48 68.017-93.18 121.256-140.843 118.75C411.304 407.96 458.192 271.063 404.22 155.03z"></path></svg></span><b>яблуко</b></li><li data-s><span class="ic ic-amber lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M427.313 26.188c-4.8.012-9.63 1.264-14.032 3.406 9.05 78.836 5.48 143.09-43.217 231.844 63.85-73.5 80.035-178.61 74.75-228.344-5.21-4.886-11.33-6.922-17.5-6.907zm-91.032 48.75c-98.73 2.416-95.504 294.125-310.155 346.812C229.537 547.755 623.41 365.046 450.03 152.812c-.923 2.79-1.863 5.586-2.81 8.407 10.803 52.818 6.81 110.217-20.44 172.874 3.956-40.244 3.315-78.758-2.905-115.656-7.34 14.28-16.703 28.132-26.28 42.062 1.357 40.016-6.12 82.247-25.72 127.313 3.143-32.007 2.588-62.875-.563-92.875-12.835 14.593-27.163 28.624-43.218 41.468-3.802 25.377-10.96 51.658-22.78 78.844 2.12-21.604 2.46-42.944 1.748-63.656C271.472 375.8 229.21 395.157 178 405.906c43.122-24.2 77.516-49.167 105.688-74.75-18.532-3.86-37.607-6.38-56.657-8.156 25.186-6.363 50.08-8.858 74.19-8.188 17.226-17.617 31.62-35.325 43.217-53.718-32.133-5.78-64.654-7.476-97.53-5.28 37.746-18.268 75.352-24.643 112.718-22.19 9.655-19.872 16.26-40.42 21.03-61.31-28.417-2.687-59.37 4.05-94.624 12.842 31.834-29.16 66.23-41.838 100.44-45.562 1.778-14.472 2.736-28.956 2.905-43.906-19.706-14.02-36.318-20.438-50.75-20.75-.79-.018-1.566-.02-2.344 0z"></path></svg></span><b>листя</b></li><li data-s><span class="ic ic-olive lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M249.28 19.188v.25c-18.114 38.634-45.065 72.36-77.686 102.937l37.72-3.938-51.345 65.032 24.81-7.907-33.624 54.875 16.53 9.843-65.25 92.157 36.095.188-51.686 83.594 63.562-8.126 12 32.094 66.438-25.282L215.5 493.28h52.938l-6.532-68.217 38.188 16.406 10.187-24.783 44.283 20.97 56.406-20.75-37.064-64.094-12.437-2.282 6.78 17.19 7.844 19.905-19.938-7.78-50.906-19.908V395.688l-14.156-8.594-69.375-42-21.595 21.25-18.03 17.75 2.155-25.22 2.125-24.655 18.188 1.56 9.218-9.092 5.19-5.094 6.218 3.75 61.375 37.156v-29.906l12.75 4.97 43.718 17.092-5.092-12.906-6.157-15.656 16.533 3.03 45.468 8.345-34.53-38.94-23.625 14.033-6.688 3.968-5.125-5.874-14.28-16.437.218 1.217-18.406 3.22-5.97-34.313-5.75-33.063 22 25.345 31.188 35.875 43.907-26.03c-24.67-19.543-39.507-33.87-49.658-48.814l.813 12.656 1.97 31-18.75-24.75-34.47-45.437-22.25 46.813-13.844 29.125-3.843-32.032-3.5-28.843 16.532-1.968 16.624-34.97 6.594-13.875 9.28 12.22 25 32.936-.75-11.53-.906-14.28 13.47 4.936L341.81 188l-26.125-35.156-55.843-28.875-8.938 20.218-9.656 21.937-7.72-22.688-7.468-21.875 16.97-5.78 3.718-8.438 4-9.125 8.844 4.593 49.375 25.53 16.467-5.562c-43.42-34.31-64.63-68.886-76.156-103.593z"></path></svg></span><b>хвоя</b></li><li data-s><span class="ic ic-terra lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M293.5 25.08c-19.9 21.16-44 43.18-75.6 51.3 9.6 13.18 16.6 28.02 22.6 40.22 4.7-.8 9.4-1.3 14.2-1.3 1.8 0 3.6.1 5.4.2-4.6-8.7-7.1-17.98-8.3-25.81l-.7-4.73 3.5-3.23c15.3-14.1 36.1-22.27 57.8-30.82-8.1-8.47-14.2-17.16-18.9-25.83zM254.7 133.3c-27.1 0-52.6 18.2-71.9 50.1-19.3 31.9-31.7 76.9-31.7 126.7s12.4 94.8 31.7 126.7c19.3 31.9 44.8 50.1 71.9 50.1 27.1 0 52.6-18.2 71.9-50.1 19.3-31.9 31.7-76.9 31.7-126.7s-12.4-94.8-31.7-126.7c-19.3-31.9-44.8-50.1-71.9-50.1zm-98.5 12.1c-18.1 0-36.8 16-51.2 45.9-14.42 29.8-23.69 72.2-23.69 119.1 0 46.9 9.27 89.3 23.69 119.1 14.4 29.9 33.1 45.9 51.2 45.9 8.3 0 16.8-3.4 24.9-9.9-4.9-6-9.5-12.5-13.7-19.4-21.4-35.3-34.3-83.2-34.3-136s12.9-100.7 34.3-136c4.1-6.8 8.6-13.2 13.4-19-8-6.4-16.4-9.7-24.6-9.7zm205.4 2.4c-9.6 0-19.3 4.5-28.5 13.1 3.1 4.2 6.1 8.6 8.9 13.2 21.4 35.3 34.3 83.2 34.3 136s-12.9 100.7-34.3 136c-3.5 5.8-7.2 11.2-11.2 16.3 9.8 10.1 20.4 15.4 30.8 15.4 18.1 0 36.8-16 51.2-45.9 14.4-29.8 23.7-72.2 23.7-119.1 0-46.9-9.3-89.3-23.7-119.1-14.4-29.9-33.1-45.9-51.2-45.9zm-267.77.9c-17.89 0-36.02 14.8-50.05 42.4-14.02 27.6-23.07 66.8-23.07 110.2 0 43.4 9.05 82.6 23.07 110.2 14.03 27.6 32.16 42.4 50.05 42.4 1.32 0 2.63-.1 3.95-.3-3.22-5-6.23-10.5-9.01-16.3-15.96-33.1-25.46-77.7-25.46-126.9s9.5-93.8 25.46-126.9c5.76-12 12.53-22.6 20.13-31.3-5-2.3-10.06-3.5-15.07-3.5zm324.37 1.5c-3.8 0-7.6.7-11.4 2 8.5 9.1 15.9 20.6 22.2 33.7 16 33.1 25.5 77.7 25.5 126.9S445 406.6 429 439.7c-2.6 5.5-5.5 10.7-8.5 15.6 17.1-1.2 34.3-15.9 47.7-42.3 14.1-27.6 23.1-66.8 23.1-110.2 0-43.4-9-82.6-23.1-110.2-14-27.6-32.1-42.4-50-42.4z"></path></svg></span><b>гарбуз</b></li><li data-s><span class="ic ic-olive lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M18 494l36.35-330.4c6.728 107.62 4.086 231.82 35.556 295.67 11.205-84.926 15.707-168.18 10.562-249.01 15.225 71.69 35.543 141.68 39.468 217.14 7.395-55.935 12.667-111.52 31.798-169.41-.76 65.19-17.16 124.9 12.677 157.47 14.433-51.01 28.992-101.9 31.46-164.88 21.27 61.862 18.342 135.82 24.948 205.02 8.417-68.06 15.28-257.84 46.907-318.17-3.11 124.98-3.862 223.94 27.398 274.23 30.897-38.673 33.566-114.44 34.28-186.34 21.812 61.75 36.457 132.1 37.857 218.34 8.626-71.955 18.667-143.91 43.39-215.86-5.748 88.29-1.284 156.95 19.525 194.17 13.76-55.55 25.504-111.1 29.12-166.66 18.42 82.78 13 159.59 16.706 238.69z"></path></svg></span><b>трава</b></li></ul>
+<p class="ask ask-plum" data-s><span class="ic ic-plum md" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M21.307 21.307v469.386h202.83c-4.174-21.84-1.993-42.658 6.646-60.482 14.007-28.898 44.732-48.323 86.37-51.22l.19-.013.194-.004c13.59-.456 44.624-11.956 61.684-31.192 8.53-9.617 13.925-20.642 14.282-33.626.357-12.984-4.327-28.633-18.682-47.488-53.87-70.76-118.502-154.877-153.504-245.36zm112.767 248.937l16.998 5.926c-7.097 20.357-10.2 36.084-10.066 48.324.132 12.24 3.172 20.972 9.11 29.108 11.874 16.27 37.717 29.868 75.25 49.265l-8.264 15.992c-37.432-19.346-65.516-32.708-81.528-54.647-8.006-10.97-12.4-24.158-12.566-39.526-.167-15.367 3.568-32.934 11.066-54.443zM288.44 330.13c19.56-.24 33.37 5.704 36.013 15.497 1.73 6.472-1.583 14.065-9.324 21.38-5.33-15.247-27.126-21.834-49.005-14.812-20.975 6.755-34.747 23.72-31.6 38.928-13.273-1.856-22.015-7.213-24.076-14.754-3.99-14.79 18.3-33.662 49.78-42.15 9.55-2.576 19.25-3.982 28.21-4.09z"></path></svg></span>Понюхай і проголосуй!</p></div>
+<template class="notes">СЕНСОРНА ЛАБОРАТОРІЯ «ЗАПАХ ОСЕНІ».
+Батькам і дітям пропонуємо понюхати (із закритими очима) зразки: мокра земля, яблуко, листя, хвоя, гарбуз, трава.
+Питання: «Чи має осінь запах?» — голосування.
+Після голосування діти пояснюють: запахи — це крихітні частинки речовин, що летять у повітрі (леткі речовини); ніс їх уловлює. Після дощу запах землі стає сильнішим.</template></section>
+<section class="slide  th-dark" id="slide-31" data-sky="dusk" data-title="Осінь на слух" aria-roledescription="слайд" aria-label="31 з 45: Осінь на слух" hidden>
+<div class="sheet"><h2 data-s>Осінь на слух: що ти чуєш?</h2><ol class="riddle"><li data-s><button class="snd snd-water" data-src="media/rain.mp3" aria-label="Увімкнути звук: загадка 1" aria-pressed="false"><span class="snd-b"><svg fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"></path></svg></span></button><b>1</b></li><li data-s><button class="snd snd-terra" data-src="media/rustle.mp3" aria-label="Увімкнути звук: загадка 2" aria-pressed="false"><span class="snd-b"><svg fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"></path></svg></span></button><b>2</b></li><li data-s><button class="snd snd-plum" data-src="media/wind.mp3" aria-label="Увімкнути звук: загадка 3" aria-pressed="false"><span class="snd-b"><svg fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"></path></svg></span></button><b>3</b></li><li data-s><button class="snd snd-olive" data-src="media/tit.mp3" aria-label="Увімкнути звук: загадка 4" aria-pressed="false"><span class="snd-b"><svg fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"></path></svg></span></button><b>4</b></li><li data-s><button class="snd snd-bordo" data-src="media/steps.mp3" aria-label="Увімкнути звук: загадка 5" aria-pressed="false"><span class="snd-b"><svg fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"></path></svg></span></button><b>5</b></li></ol>
+<p class="big-q big-q-y" data-s>Заплющ очі і вгадай!</p></div>
+<template class="notes">«ОСІНЬ НА СЛУХ» — гра на впізнавання (в залі темніше).
+Вмикайте звуки по черзі: клік по кнопці — слухаємо 8–10 секунд — клік ще раз — стоп. Потім питаємо: «Що це було?»
+1 — дощ; 2 — шелест листя; 3 — вітер; 4 — пісня синиці великої; 5 — кроки по сухому листю.
+Відповіді — на наступному слайді (зображення відкриваються після відгадування).
+ВАЖЛИВО: за сценарієм тут мали бути записи дітей («REAL RECORDING — OUR AUTUMN»). Таких записів немає, тому використано вільні записи з Wikimedia Commons (див. останній слайд). Якщо діти щось записали — замініть звуки.
+«Кроки по листю» складено з кількох коротких записів хрускоту листя.</template></section>
+<section class="slide  th-light" id="slide-32" data-sky="dusk" data-title="Звуки осені: відповіді" aria-roledescription="слайд" aria-label="32 з 45: Звуки осені: відповіді" hidden>
+<div class="sheet"><h2 data-s>Звуки осені: відповіді</h2><ol class="answers"><li data-s><span class="ic ic-water lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M305 19.438c-46.49 0-85.118 32.184-95.844 75.374l-4.656 18.75-11.813-15.28C179.864 81.69 160.21 70.75 137.844 70.75c-38.486 0-69.97 31.515-69.97 70.063 0 6.083 1.424 12.16 3.314 18.812l2.937 10.406-10.688 1.44c-24.95 3.297-44.374 24.6-44.374 50.56 0 28.264 22.848 51.126 51.062 51.126 18.228 0 34.287-9.818 43.313-24.28l6.968-11.157 8.22 10.218c15.42 19.07 38.945 31.343 65.343 31.343 30.613 0 56.55-16.175 71.31-40.686l7.94-13.188 8.03 13.156c8.978 14.675 24.76 24.22 43.28 24.22 14.95 0 28.317-6.327 37.626-16.5l6.47-7.063 6.905 6.624c12.575 12.055 29.132 19.375 47.845 19.375 38.486 0 69.938-31.485 69.938-70.033 0-38.547-31.365-69.468-69.938-69.468-2.974 0-5.754.17-8.625.53l-10.375 1.313-.125-10.47c-.61-54.307-44.804-97.656-99.25-97.656zm42.47 258.125c-5.813 2.026-11.97 3.332-18.345 3.75l7.594 26.625 17.874-5.375-7.125-25zm-213.158 1.125l10.063 35.25 17.875-5.344-4.97-17.438c-8.218-3.173-15.918-7.404-22.968-12.47zm263 1.25l14.125 49.5 17.875-5.344-11.5-40.375c-7.104-.45-13.97-1.733-20.5-3.783zm-309.125 9.468c-5.757 1.582-11.81 2.438-18.062 2.438-.22 0-.436-.03-.656-.03l11.81 41.467 17.876-5.374-10.97-38.5zm131.97 5.125c-5.972 1.595-12.163 2.652-18.532 3.126l8.97 31.438 17.874-5.375-8.314-29.19zm70.624 7.064l-17.905 5.375 16.313 57.217 17.906-5.375-16.313-57.218zM366.72 345l-17.908 5.375 10.063 35.313 17.906-5.375L366.72 345zm-192.345 6.03l-17.906 5.376 9 31.53 17.874-5.373-8.97-31.532zm66.22 15.126l-17.907 5.375 16.937 59.44 17.906-5.376-16.936-59.438zm200.843.375l-17.907 5.376 12.19 42.656 17.874-5.375-12.156-42.656zm-330.157 3.814l-17.905 5.375 14.47 50.75 17.905-5.376-14.47-50.75zm207.907 30.937l-17.875 5.345 15.875 55.688 17.875-5.375-15.875-55.657zm69.688 21.47l-17.906 5.375 8.592 30.188 17.938-5.375-8.625-30.188zM195.47 425l-17.907 5.375 9.03 31.688 17.907-5.375L195.47 425zm270.25 26.625L447.81 457l10.5 36.844h19.438l-12.03-42.22zM137.843 463.53l-17.875 5.376 7.093 24.938H146.5l-8.656-30.313zm131.78 4.5l-17.874 5.376 5.813 20.438H277l-7.375-25.813z"></path></svg></span><i>1</i><b>дощ</b><button class="snd snd-water snd-sm" data-src="media/rain.mp3" aria-label="Увімкнути звук: дощ" aria-pressed="false"><span class="snd-b"><svg fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"></path></svg></span></button></li><li data-s><span class="ic ic-terra lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M427.313 26.188c-4.8.012-9.63 1.264-14.032 3.406 9.05 78.836 5.48 143.09-43.217 231.844 63.85-73.5 80.035-178.61 74.75-228.344-5.21-4.886-11.33-6.922-17.5-6.907zm-91.032 48.75c-98.73 2.416-95.504 294.125-310.155 346.812C229.537 547.755 623.41 365.046 450.03 152.812c-.923 2.79-1.863 5.586-2.81 8.407 10.803 52.818 6.81 110.217-20.44 172.874 3.956-40.244 3.315-78.758-2.905-115.656-7.34 14.28-16.703 28.132-26.28 42.062 1.357 40.016-6.12 82.247-25.72 127.313 3.143-32.007 2.588-62.875-.563-92.875-12.835 14.593-27.163 28.624-43.218 41.468-3.802 25.377-10.96 51.658-22.78 78.844 2.12-21.604 2.46-42.944 1.748-63.656C271.472 375.8 229.21 395.157 178 405.906c43.122-24.2 77.516-49.167 105.688-74.75-18.532-3.86-37.607-6.38-56.657-8.156 25.186-6.363 50.08-8.858 74.19-8.188 17.226-17.617 31.62-35.325 43.217-53.718-32.133-5.78-64.654-7.476-97.53-5.28 37.746-18.268 75.352-24.643 112.718-22.19 9.655-19.872 16.26-40.42 21.03-61.31-28.417-2.687-59.37 4.05-94.624 12.842 31.834-29.16 66.23-41.838 100.44-45.562 1.778-14.472 2.736-28.956 2.905-43.906-19.706-14.02-36.318-20.438-50.75-20.75-.79-.018-1.566-.02-2.344 0z"></path></svg></span><i>2</i><b>шелест листя</b><button class="snd snd-terra snd-sm" data-src="media/rustle.mp3" aria-label="Увімкнути звук: шелест листя" aria-pressed="false"><span class="snd-b"><svg fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"></path></svg></span></button></li><li data-s><span class="ic ic-plum lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M288 32c0 17.7 14.3 32 32 32l32 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128c-17.7 0-32 14.3-32 32s14.3 32 32 32l320 0c53 0 96-43 96-96s-43-96-96-96L320 0c-17.7 0-32 14.3-32 32zm64 352c0 17.7 14.3 32 32 32l32 0c53 0 96-43 96-96s-43-96-96-96L32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0c-17.7 0-32 14.3-32 32zM128 512l32 0c53 0 96-43 96-96s-43-96-96-96L32 320c-17.7 0-32 14.3-32 32s14.3 32 32 32l128 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0c-17.7 0-32 14.3-32 32s14.3 32 32 32z"></path></svg></span><i>3</i><b>вітер</b><button class="snd snd-plum snd-sm" data-src="media/wind.mp3" aria-label="Увімкнути звук: вітер" aria-pressed="false"><span class="snd-b"><svg fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"></path></svg></span></button></li><li data-s><span class="ic ic-olive lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M77.313 28.438l36.406 51.25L44.874 98.25l34.688 18.53c-37.62 38-62.482 102.735-57.532 198.94V493h147.314v-.188H269.75c-13.74-59.032-15.368-110.625-5.563-149.875-16.954-7.98-25.126-17.362-32.75-30.375 51.348 21.135 127.618 35.582 200.47 18.594-23.227-10.096-47.07-22.578-70.094-37.156-.013-.007-.02-.024-.032-.03-17.996-10.514-34.942-22.247-49.967-36.376-9.385-7.88-18.41-16.142-26.907-24.78 36.074-25.505 77.297-40.297 118.656-46.876-7.72 5.104-15.336 10.82-22.687 16.937-18.272 15.207-34.737 32.736-45.313 50.656 4.9 3.986 10.02 7.785 15.313 11.44 9.017-15.524 24.43-33.122 41.97-47.72 24.26-20.193 52.937-34.698 70.06-35.375h.126c10.89.214 21.608.935 32.064 2.125-10.838-7.647-21.748-14.487-32.72-20.563v-.25c-.145.006-.29.025-.437.032-54.844-30.266-111.23-41.295-168.03-36.72-21.272-24.23-49.025-40.62-78.657-47.875L77.312 28.437zm74.343 107.312c4.67 0 9.16.754 13.375 2.125-8.493 2.716-14.655 10.667-14.655 20.063 0 11.634 9.428 21.062 21.063 21.062 9.84 0 18.122-6.754 20.437-15.875 1.934 4.905 3 10.252 3 15.844 0 23.867-19.35 43.218-43.22 43.218-23.867 0-43.218-19.35-43.218-43.22 0-23.867 19.35-43.218 43.22-43.218z"></path></svg></span><i>4</i><b>синиця</b><button class="snd snd-olive snd-sm" data-src="media/tit.mp3" aria-label="Увімкнути звук: синиця" aria-pressed="false"><span class="snd-b"><svg fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"></path></svg></span></button></li><li data-s><span class="ic ic-bordo lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M246.625 18.375c-11.817-.153-23.918 8.608-29.375 22.438-6.716 17.02-.85 35.28 13.094 40.78 13.943 5.502 30.69-3.822 37.406-20.843 6.716-17.02.85-35.28-13.094-40.78-2.614-1.033-5.304-1.56-8.03-1.595zm74.75 15.938c-10.97.006-22.743 6.024-30.78 16.874-12.25 16.534-11.2 38.06 2.342 48.094 13.544 10.035 34.44 4.754 46.688-11.78 12.25-16.534 11.2-38.06-2.344-48.094-4.654-3.45-10.16-5.097-15.905-5.093zm67.25 37.53c-10.336-.127-21.542 4.263-30.47 12.907-15.87 15.368-18.525 38.344-5.936 51.344 12.587 13 35.66 11.086 51.53-4.28 15.87-15.37 18.526-38.345 5.938-51.345-5.508-5.69-13.024-8.527-21.063-8.626zm-156.438 32.063c-22.51-.28-44.378 6.893-63.5 24C107.65 182.513 48.192 261.012 28.28 386.97 5.023 534.1 186.257 507.523 168.313 428.936c-22.922-100.387 34.13-141.11 108-124.156 32.838 7.54 66.54-4.9 86-40.436 23.402-42.733-7.428-106.817-62.875-139.625-21.61-12.79-44.74-20.534-67.25-20.814zM449.438 134c-10.52.022-21.654 2.82-32.093 8.625-27.837 15.48-40.15 46.51-27.47 69.313 12.682 22.802 45.54 28.73 73.376 13.25 27.837-15.48 40.118-46.51 27.438-69.313-7.926-14.252-23.717-21.91-41.25-21.875z"></path></svg></span><i>5</i><b>кроки по листю</b><button class="snd snd-bordo snd-sm" data-src="media/steps.mp3" aria-label="Увімкнути звук: кроки по листю" aria-pressed="false"><span class="snd-b"><svg fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"></path></svg></span></button></li></ol></div>
+<template class="notes">ВІДПОВІДІ: 1 — дощ, 2 — шелест листя, 3 — вітер, 4 — синиця велика (співає й восени, залишається в Україні на зиму), 5 — кроки по сухому листю.
+Маленькі кнопки внизу — щоб прослухати ще раз.
+Джерела звуків — на останньому слайді.</template></section>
+<section class="slide slide-scene th-dark" id="slide-33" data-sky="night" data-title="21:00 Чому птахи відлітають?" aria-roledescription="слайд" aria-label="33 з 45: 21:00 Чому птахи відлітають?" hidden>
+<div class="sheet"><div class="scene"><img class="scene-img" src="img/scene-21.jpg" alt="Наше дерево і будиночок о 21:00">
+<div class="clock" data-s>21:00</div><div class="glass g-right" data-s><h2 class="h2-q">Чому одні птахи відлітають, а інші залишаються?</h2></div><ol class="tl" aria-label="Час доби"><li class=""><span></span>06:00</li><li class=""><span></span>09:00</li><li class=""><span></span>12:00</li><li class=""><span></span>15:00</li><li class=""><span></span>18:00</li><li class="on" aria-current="step"><span></span>21:00</li><li class=""><span></span>00:00</li></ol></div></div>
+<template class="notes">21:00 — НІЧ НАБЛИЖАЄТЬСЯ.
+На екрані — темний «ліс» біля нашого дерева. Вийшов місяць, з’явилася сова.
+Питання: «Чому деякі тварини залишаються, а інші готуються до подорожі?»
+Команда «Таємне життя мігрантів» показує своє дослідження.</template></section>
+<section class="slide  th-light" id="slide-34" data-sky="night" data-title="Хто відлітає, а хто залишається?" aria-roledescription="слайд" aria-label="34 з 45: Хто відлітає, а хто залишається?" hidden>
+<div class="sheet"><h2 data-s>Хто відлітає, а хто залишається?</h2><ul class="birds"><li data-s><img src="img/circle-stork.png" alt="Лелека білий"><b>Лелека білий</b><span class="tag tag-bordo">відлітає</span><button class="snd snd-bordo snd-sm" data-src="media/stork.mp3" aria-label="Увімкнути звук: Лелека білий" aria-pressed="false"><span class="snd-b"><svg fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"></path></svg></span></button></li><li data-s><img src="img/circle-swallow.png" alt="Ластівка сільська"><b>Ластівка сільська</b><span class="tag tag-water">відлітає</span><button class="snd snd-water snd-sm" data-src="media/swallow.mp3" aria-label="Увімкнути звук: Ластівка сільська" aria-pressed="false"><span class="snd-b"><svg fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"></path></svg></span></button></li><li data-s><img src="img/circle-crane.png" alt="Журавель сірий"><b>Журавель сірий</b><span class="tag tag-plum">відлітає</span><button class="snd snd-plum snd-sm" data-src="media/crane.mp3" aria-label="Увімкнути звук: Журавель сірий" aria-pressed="false"><span class="snd-b"><svg fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"></path></svg></span></button></li><li data-s><img src="img/circle-tit.png" alt="Синиця велика"><b>Синиця велика</b><span class="tag tag-olive">залишається</span><button class="snd snd-olive snd-sm" data-src="media/tit.mp3" aria-label="Увімкнути звук: Синиця велика" aria-pressed="false"><span class="snd-b"><svg fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"></path></svg></span></button></li></ul>
+<p class="credit" data-s>Фото: Andreas Trepte (CC BY-SA 2.5), Charles J. Sharp (CC BY-SA 4.0) — Wikimedia Commons. Звуки — див. останній слайд.</p></div>
+<template class="notes">ХТО ВІДЛІТАЄ, А ХТО ЗАЛИШАЄТЬСЯ.
+Лелека білий, ластівка сільська, журавель сірий — перелітні птахи України. Синиця велика зимує в Україні.
+Чому відлітають: узимку зникає їхня їжа — ластівки ловлять комах у повітрі, лелеки їдять жаб, комах, дрібних тварин. Синиця може знайти насіння, ховану їжу, прилітає до годівниць.
+ЗВУКИ (кнопки під птахами, ≈15–25 с, після 10 с можна зупинити):
+• лелека майже не кричить — він клекоче дзьобом (чути «тріск»);
+• ластівка — щебет;
+• журавель — гучне «курли»;
+• синиця — «ці-фі, ці-фі».
+Фото: Wikimedia Commons (автори на останньому слайді).</template></section>
+<section class="slide  th-light" id="slide-35" data-sky="night" data-title="Лелека: в обхід моря" aria-roledescription="слайд" aria-label="35 з 45: Лелека: в обхід моря" hidden>
+<div class="sheet"><h2 data-s>Лелека: в обхід моря</h2><div class="split s-map"><div data-s><figure class="ph ph-map" style="--tilt:-1deg"><img src="img/map-stork.jpg" alt="Карта-схема зимових перельотів: Лелека: в обхід моря" loading="lazy"></figure></div>
+<div class="col"><ul class="maplist"><li data-s><span class="ic ic-bordo md" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"></path></svg></span>Летить над сушею, обминаючи море</li><li data-s><span class="ic ic-bordo md" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><path d="M384 476.1L192 421.2l0-385.3L384 90.8l0 385.3zm32-1.2l0-386.5L543.1 37.5c15.8-6.3 32.9 5.3 32.9 22.3l0 334.8c0 9.8-6 18.6-15.1 22.3L416 474.8zM15.1 95.1L160 37.2l0 386.5L32.9 474.5C17.1 480.8 0 469.2 0 452.2L0 117.4c0-9.8 6-18.6 15.1-22.3z"></path></svg></span>Через Туреччину, Ізраїль, уздовж річки Ніл</li><li data-s><span class="ic ic-bordo md" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M361.5 1.2c5 2.1 8.6 6.6 9.6 11.9L391 121l107.9 19.8c5.3 1 9.8 4.6 11.9 9.6s1.5 10.7-1.6 15.2L446.9 256l62.3 90.3c3.1 4.5 3.7 10.2 1.6 15.2s-6.6 8.6-11.9 9.6L391 391 371.1 498.9c-1 5.3-4.6 9.8-9.6 11.9s-10.7 1.5-15.2-1.6L256 446.9l-90.3 62.3c-4.5 3.1-10.2 3.7-15.2 1.6s-8.6-6.6-9.6-11.9L121 391 13.1 371.1c-5.3-1-9.8-4.6-11.9-9.6s-1.5-10.7 1.6-15.2L65.1 256 2.8 165.7c-3.1-4.5-3.7-10.2-1.6-15.2s6.6-8.6 11.9-9.6L121 121 140.9 13.1c1-5.3 4.6-9.8 9.6-11.9s10.7-1.5 15.2 1.6L256 65.1 346.3 2.8c4.5-3.1 10.2-3.7 15.2-1.6zM160 256a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zm224 0a128 128 0 1 0 -256 0 128 128 0 1 0 256 0z"></path></svg></span>Зимує у Східній та Південній Африці</li></ul><p class="note" data-s>Карта-схема: показано загальний напрямок, а не точний шлях кожного птаха.</p></div></div></div>
+<template class="notes">КАРТА: ЛЕЛЕКА БІЛИЙ.
+Лелеки з України летять так званим східним шляхом: над сушею, обминаючи широке море — через протоку Босфор (Туреччина), уздовж узбережжя Близького Сходу (Ізраїль), далі вздовж долини Нілу на південь. Зимують у саванах Східної та Південної Африки.
+Чому в обхід моря: лелека ширяє на теплих потоках повітря, які утворюються над землею, а над морем їх майже немає.
+Маршрут схематичний.
+Джерело: Wikipedia, «White stork» (розділ Migration) — https://en.wikipedia.org/wiki/White_stork
+Активність: діти натягують нитку від України до місця зимівлі на великій карті на підлозі і проходять маршрут «лелеки».</template></section>
+<section class="slide  th-light" id="slide-36" data-sky="night" data-title="Ластівка: аж на південь Африки" aria-roledescription="слайд" aria-label="36 з 45: Ластівка: аж на південь Африки" hidden>
+<div class="sheet"><h2 data-s>Ластівка: аж на південь Африки</h2><div class="split s-map"><div data-s><figure class="ph ph-map" style="--tilt:-1deg"><img src="img/map-swallow.jpg" alt="Карта-схема зимових перельотів: Ластівка: аж на південь Африки" loading="lazy"></figure></div>
+<div class="col"><ul class="maplist"><li data-s><span class="ic ic-water md" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"></path></svg></span>Летить через Середземне море і пустелю Сахару</li><li data-s><span class="ic ic-water md" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><path d="M384 476.1L192 421.2l0-385.3L384 90.8l0 385.3zm32-1.2l0-386.5L543.1 37.5c15.8-6.3 32.9 5.3 32.9 22.3l0 334.8c0 9.8-6 18.6-15.1 22.3L416 474.8zM15.1 95.1L160 37.2l0 386.5L32.9 474.5C17.1 480.8 0 469.2 0 452.2L0 117.4c0-9.8 6-18.6 15.1-22.3z"></path></svg></span>Один із найдовших шляхів</li><li data-s><span class="ic ic-water md" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M361.5 1.2c5 2.1 8.6 6.6 9.6 11.9L391 121l107.9 19.8c5.3 1 9.8 4.6 11.9 9.6s1.5 10.7-1.6 15.2L446.9 256l62.3 90.3c3.1 4.5 3.7 10.2 1.6 15.2s-6.6 8.6-11.9 9.6L391 391 371.1 498.9c-1 5.3-4.6 9.8-9.6 11.9s-10.7 1.5-15.2-1.6L256 446.9l-90.3 62.3c-4.5 3.1-10.2 3.7-15.2 1.6s-8.6-6.6-9.6-11.9L121 391 13.1 371.1c-5.3-1-9.8-4.6-11.9-9.6s-1.5-10.7 1.6-15.2L65.1 256 2.8 165.7c-3.1-4.5-3.7-10.2-1.6-15.2s6.6-8.6 11.9-9.6L121 121 140.9 13.1c1-5.3 4.6-9.8 9.6-11.9s10.7-1.5 15.2 1.6L256 65.1 346.3 2.8c4.5-3.1 10.2-3.7 15.2-1.6zM160 256a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zm224 0a128 128 0 1 0 -256 0 128 128 0 1 0 256 0z"></path></svg></span>Зимує на півдні Африки</li></ul><p class="note" data-s>Карта-схема: показано загальний напрямок, а не точний шлях кожного птаха.</p></div></div></div>
+<template class="notes">КАРТА: ЛАСТІВКА СІЛЬСЬКА.
+Ластівки зі Східної Європи (до неї належить і Україна) зимують переважно на півдні Африки — дослідники за даними кільцювання оцінюють, що практично всі вони залишаються на зиму саме там.
+Ластівка летить широким фронтом, долаючи море і пустелю; на схемі показано загальний напрямок.
+Джерело: Underhill L.G., Remisiewicz M. (2025) Birds 6(3):48, https://www.mdpi.com/2673-6004/6/3/48 (посилання на дані кільцювання).
+Маршрут схематичний.</template></section>
+<section class="slide  th-light" id="slide-37" data-sky="night" data-title="Журавель: через Крим і Туреччину" aria-roledescription="слайд" aria-label="37 з 45: Журавель: через Крим і Туреччину" hidden>
+<div class="sheet"><h2 data-s>Журавель: через Крим і Туреччину</h2><div class="split s-map"><div data-s><figure class="ph ph-map" style="--tilt:-1deg"><img src="img/map-crane.jpg" alt="Карта-схема зимових перельотів: Журавель: через Крим і Туреччину" loading="lazy"></figure></div>
+<div class="col"><ul class="maplist"><li data-s><span class="ic ic-plum md" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"></path></svg></span>Летить зграями-«ключами» на південь</li><li data-s><span class="ic ic-plum md" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><path d="M384 476.1L192 421.2l0-385.3L384 90.8l0 385.3zm32-1.2l0-386.5L543.1 37.5c15.8-6.3 32.9 5.3 32.9 22.3l0 334.8c0 9.8-6 18.6-15.1 22.3L416 474.8zM15.1 95.1L160 37.2l0 386.5L32.9 474.5C17.1 480.8 0 469.2 0 452.2L0 117.4c0-9.8 6-18.6 15.1-22.3z"></path></svg></span>Зупиняється в Ізраїлі (долина Хула)</li><li data-s><span class="ic ic-plum md" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M361.5 1.2c5 2.1 8.6 6.6 9.6 11.9L391 121l107.9 19.8c5.3 1 9.8 4.6 11.9 9.6s1.5 10.7-1.6 15.2L446.9 256l62.3 90.3c3.1 4.5 3.7 10.2 1.6 15.2s-6.6 8.6-11.9 9.6L391 391 371.1 498.9c-1 5.3-4.6 9.8-9.6 11.9s-10.7 1.5-15.2-1.6L256 446.9l-90.3 62.3c-4.5 3.1-10.2 3.7-15.2 1.6s-8.6-6.6-9.6-11.9L121 391 13.1 371.1c-5.3-1-9.8-4.6-11.9-9.6s-1.5-10.7 1.6-15.2L65.1 256 2.8 165.7c-3.1-4.5-3.7-10.2-1.6-15.2s6.6-8.6 11.9-9.6L121 121 140.9 13.1c1-5.3 4.6-9.8 9.6-11.9s10.7-1.5 15.2 1.6L256 65.1 346.3 2.8c4.5-3.1 10.2-3.7 15.2-1.6zM160 256a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zm224 0a128 128 0 1 0 -256 0 128 128 0 1 0 256 0z"></path></svg></span>Зимує в Ефіопії та Судані, частина — в Ізраїлі й Туреччині</li></ul><p class="note" data-s>Карта-схема: показано загальний напрямок, а не точний шлях кожного птаха.</p></div></div></div>
+<template class="notes">КАРТА: ЖУРАВЕЛЬ СІРИЙ.
+Над Україною журавлі летять двома великими потоками переважно на південь, частина — через Сиваш і Крим (Гріщенко В.Н., «Беркут», 2007).
+Журавлі зі Східної Європи зимують переважно в долинах річок Судану та Ефіопії, менше — у Туреччині, Ізраїлі, Іраку (Wikipedia «Common crane»). Долина Хула в Ізраїлі — відома зупинка і місце зимівлі.
+Джерела: https://en.wikipedia.org/wiki/Common_crane ; https://aetos.kiev.ua/berkut/berkut16-2/162-17.htm
+Маршрут схематичний.</template></section>
+<section class="slide  th-light" id="slide-38" data-sky="night" data-title="Не всі летять в одне місце!" aria-roledescription="слайд" aria-label="38 з 45: Не всі летять в одне місце!" hidden>
+<div class="sheet"><h2 data-s>Не всі летять в одне місце!</h2><div class="split s-map"><div data-s><figure class="ph ph-map" style="--tilt:1deg"><img src="img/map-all.jpg" alt="Карта-схема: три маршрути разом" loading="lazy"></figure></div>
+<div class="col"><ul class="who"><li data-s><img src="img/circle-stork.png" alt="Лелека"><span><b class="c-bordo">Лелека</b>Східна і Південна Африка</span></li><li data-s><img src="img/circle-swallow.png" alt="Ластівка"><span><b class="c-water">Ластівка</b>Південна Африка</span></li><li data-s><img src="img/circle-crane.png" alt="Журавель"><span><b class="c-plum">Журавель</b>Ефіопія, Судан, Ізраїль</span></li></ul><p class="note" data-s>Карта-схема</p></div></div></div>
+<template class="notes">ПОРІВНЯННЯ МАРШРУТІВ.
+Усі троє вилітають з України, але зимують у РІЗНИХ місцях і летять різними шляхами.
+Питання: «Хто летить найдалі?» (ластівка і лелека — аж на південь Африки), «Хто зимує найближче?» (частина журавлів — в Ізраїлі та Туреччині).
+Карта-схема; джерела — в нотатках до попередніх трьох слайдів.</template></section>
+<section class="slide  th-dark" id="slide-39" data-sky="night" data-title="Як птах знає, куди летіти?" aria-roledescription="слайд" aria-label="39 з 45: Як птах знає, куди летіти?" hidden>
+<div class="sheet"><h2 data-s>Як птах знає, куди летіти?</h2><p class="lead lead-dark" data-s>Ніч. Немає карти. Немає дороги. Немає GPS.</p>
+<ul class="nav5"><li data-s><span class="ic ic-amber lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M361.5 1.2c5 2.1 8.6 6.6 9.6 11.9L391 121l107.9 19.8c5.3 1 9.8 4.6 11.9 9.6s1.5 10.7-1.6 15.2L446.9 256l62.3 90.3c3.1 4.5 3.7 10.2 1.6 15.2s-6.6 8.6-11.9 9.6L391 391 371.1 498.9c-1 5.3-4.6 9.8-9.6 11.9s-10.7 1.5-15.2-1.6L256 446.9l-90.3 62.3c-4.5 3.1-10.2 3.7-15.2 1.6s-8.6-6.6-9.6-11.9L121 391 13.1 371.1c-5.3-1-9.8-4.6-11.9-9.6s-1.5-10.7 1.6-15.2L65.1 256 2.8 165.7c-3.1-4.5-3.7-10.2-1.6-15.2s6.6-8.6 11.9-9.6L121 121 140.9 13.1c1-5.3 4.6-9.8 9.6-11.9s10.7-1.5 15.2 1.6L256 65.1 346.3 2.8c4.5-3.1 10.2-3.7 15.2-1.6zM160 256a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zm224 0a128 128 0 1 0 -256 0 128 128 0 1 0 256 0z"></path></svg></span><b>Сонце</b></li><li data-s><span class="ic ic-water lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path></svg></span><b>Зірки</b></li><li data-s><span class="ic ic-olive lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M560 160A80 80 0 1 0 560 0a80 80 0 1 0 0 160zM55.9 512l325.2 0 75 0 122.8 0c33.8 0 61.1-27.4 61.1-61.1c0-11.2-3.1-22.2-8.9-31.8l-132-216.3C495 196.1 487.8 192 480 192s-15 4.1-19.1 10.7l-48.2 79L286.8 81c-6.6-10.6-18.3-17-30.8-17s-24.1 6.4-30.8 17L8.6 426.4C3 435.3 0 445.6 0 456.1C0 487 25 512 55.9 512z"></path></svg></span><b>Річки, гори, береги</b></li><li data-s><span class="ic ic-terra lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M21.307 21.307v469.386h202.83c-4.174-21.84-1.993-42.658 6.646-60.482 14.007-28.898 44.732-48.323 86.37-51.22l.19-.013.194-.004c13.59-.456 44.624-11.956 61.684-31.192 8.53-9.617 13.925-20.642 14.282-33.626.357-12.984-4.327-28.633-18.682-47.488-53.87-70.76-118.502-154.877-153.504-245.36zm112.767 248.937l16.998 5.926c-7.097 20.357-10.2 36.084-10.066 48.324.132 12.24 3.172 20.972 9.11 29.108 11.874 16.27 37.717 29.868 75.25 49.265l-8.264 15.992c-37.432-19.346-65.516-32.708-81.528-54.647-8.006-10.97-12.4-24.158-12.566-39.526-.167-15.367 3.568-32.934 11.066-54.443zM288.44 330.13c19.56-.24 33.37 5.704 36.013 15.497 1.73 6.472-1.583 14.065-9.324 21.38-5.33-15.247-27.126-21.834-49.005-14.812-20.975 6.755-34.747 23.72-31.6 38.928-13.273-1.856-22.015-7.213-24.076-14.754-3.99-14.79 18.3-33.662 49.78-42.15 9.55-2.576 19.25-3.982 28.21-4.09z"></path></svg></span><b>Запахи</b></li><li data-s><span class="ic ic-bordo lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M0 160l0 96C0 379.7 100.3 480 224 480s224-100.3 224-224l0-96-128 0 0 96c0 53-43 96-96 96s-96-43-96-96l0-96L0 160zm0-32l128 0 0-64c0-17.7-14.3-32-32-32L32 32C14.3 32 0 46.3 0 64l0 64zm320 0l128 0 0-64c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32 14.3-32 32l0 64z"></path></svg></span><b>Магнітне поле Землі</b></li></ul></div>
+<template class="notes">«ЯК ВІН ЗНАЄ, КУДИ ЛЕТІТИ?»
+Ведучий: «Уявіть, що ви летите вночі. Карти немає. Дороги немає. GPS немає. Як знайти напрямок?»
+Діти отримують компас, магніт, карту і «невідому точку». Пробують визначити напрямок за компасом.
+Пояснення: птахи орієнтуються за Сонцем, зірками, ландшафтом (річки, гори, береги морів), у деяких — за запахами; деякі тварини здатні відчувати магнітне поле Землі — як вбудований компас.</template></section>
+<section class="slide  th-light" id="slide-40" data-sky="night" data-title="Пташиний GPS" aria-roledescription="слайд" aria-label="40 з 45: Пташиний GPS" hidden>
+<div class="sheet"><h2 data-s>Пташиний GPS</h2><div class="vs"><div class="vs-c" data-s><span class="ic ic-olive md" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M160.8 96.5c14 17 31 30.9 49.5 42.2c25.9 15.8 53.7 25.9 77.7 31.6l0-31.5C265.8 108.5 250 71.5 248.6 28c-.4-11.3-7.5-21.5-18.4-24.4c-7.6-2-15.8-.2-21 5.8c-13.3 15.4-32.7 44.6-48.4 87.2zM320 144l0 30.6s0 0 0 0l0 1.3s0 0 0 0l0 32.1c-60.8-5.1-185-43.8-219.3-157.2C97.4 40 87.9 32 76.6 32c-7.9 0-15.3 3.9-18.8 11C46.8 65.9 32 112.1 32 176c0 116.9 80.1 180.5 118.4 202.8L11.8 416.6C6.7 418 2.6 421.8 .9 426.8s-.8 10.6 2.3 14.8C21.7 466.2 77.3 512 160 512c3.6 0 7.2-1.2 10-3.5L245.6 448l74.4 0c88.4 0 160-71.6 160-160l0-160 29.9-44.9c1.3-2 2.1-4.4 2.1-6.8c0-6.8-5.5-12.3-12.3-12.3L400 64c-44.2 0-80 35.8-80 80zm80-16a16 16 0 1 1 0 32 16 16 0 1 1 0-32z"></path></svg></span><b class="c-olive">Птах</b><p>Сонце, зірки, магнітне поле</p></div>
+<div class="vs-c" data-s><span class="ic ic-water md" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><path d="M160 48a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zM126.5 199.3c-1 .4-1.9 .8-2.9 1.2l-8 3.5c-16.4 7.3-29 21.2-34.7 38.2l-2.6 7.8c-5.6 16.8-23.7 25.8-40.5 20.2s-25.8-23.7-20.2-40.5l2.6-7.8c11.4-34.1 36.6-61.9 69.4-76.5l8-3.5c20.8-9.2 43.3-14 66.1-14c44.6 0 84.8 26.8 101.9 67.9L281 232.7l21.4 10.7c15.8 7.9 22.2 27.1 14.3 42.9s-27.1 22.2-42.9 14.3L247 287.3c-10.3-5.2-18.4-13.8-22.8-24.5l-9.6-23-19.3 65.5 49.5 54c5.4 5.9 9.2 13 11.2 20.8l23 92.1c4.3 17.1-6.1 34.5-23.3 38.8s-34.5-6.1-38.8-23.3l-22-88.1-70.7-77.1c-14.8-16.1-20.3-38.6-14.7-59.7l16.9-63.5zM68.7 398l25-62.4c2.1 3 4.5 5.8 7 8.6l40.7 44.4-14.5 36.2c-2.4 6-6 11.5-10.6 16.1L54.6 502.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L68.7 398z"></path></svg></span><b class="c-water">Людина</b><p>Карта, компас, GPS</p></div></div>
+<p class="say say-r" data-s>Гра: доведи птаха до зимівлі!</p><ul class="roles"><li data-s><span class="ic ic-olive md" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M160.8 96.5c14 17 31 30.9 49.5 42.2c25.9 15.8 53.7 25.9 77.7 31.6l0-31.5C265.8 108.5 250 71.5 248.6 28c-.4-11.3-7.5-21.5-18.4-24.4c-7.6-2-15.8-.2-21 5.8c-13.3 15.4-32.7 44.6-48.4 87.2zM320 144l0 30.6s0 0 0 0l0 1.3s0 0 0 0l0 32.1c-60.8-5.1-185-43.8-219.3-157.2C97.4 40 87.9 32 76.6 32c-7.9 0-15.3 3.9-18.8 11C46.8 65.9 32 112.1 32 176c0 116.9 80.1 180.5 118.4 202.8L11.8 416.6C6.7 418 2.6 421.8 .9 426.8s-.8 10.6 2.3 14.8C21.7 466.2 77.3 512 160 512c3.6 0 7.2-1.2 10-3.5L245.6 448l74.4 0c88.4 0 160-71.6 160-160l0-160 29.9-44.9c1.3-2 2.1-4.4 2.1-6.8c0-6.8-5.5-12.3-12.3-12.3L400 64c-44.2 0-80 35.8-80 80zm80-16a16 16 0 1 1 0 32 16 16 0 1 1 0-32z"></path></svg></span><b>Птах</b></li><li data-s><span class="ic ic-amber md" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M361.5 1.2c5 2.1 8.6 6.6 9.6 11.9L391 121l107.9 19.8c5.3 1 9.8 4.6 11.9 9.6s1.5 10.7-1.6 15.2L446.9 256l62.3 90.3c3.1 4.5 3.7 10.2 1.6 15.2s-6.6 8.6-11.9 9.6L391 391 371.1 498.9c-1 5.3-4.6 9.8-9.6 11.9s-10.7 1.5-15.2-1.6L256 446.9l-90.3 62.3c-4.5 3.1-10.2 3.7-15.2 1.6s-8.6-6.6-9.6-11.9L121 391 13.1 371.1c-5.3-1-9.8-4.6-11.9-9.6s-1.5-10.7 1.6-15.2L65.1 256 2.8 165.7c-3.1-4.5-3.7-10.2-1.6-15.2s6.6-8.6 11.9-9.6L121 121 140.9 13.1c1-5.3 4.6-9.8 9.6-11.9s10.7-1.5 15.2 1.6L256 65.1 346.3 2.8c4.5-3.1 10.2-3.7 15.2-1.6zM160 256a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zm224 0a128 128 0 1 0 -256 0 128 128 0 1 0 256 0z"></path></svg></span><b>Сонце</b></li><li data-s><span class="ic ic-bordo md" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M0 160l0 96C0 379.7 100.3 480 224 480s224-100.3 224-224l0-96-128 0 0 96c0 53-43 96-96 96s-96-43-96-96l0-96L0 160zm0-32l128 0 0-64c0-17.7-14.3-32-32-32L32 32C14.3 32 0 46.3 0 64l0 64zm320 0l128 0 0-64c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32 14.3-32 32l0 64z"></path></svg></span><b>Магнітне поле</b></li></ul></div>
+<template class="notes">ПТАХ І ЛЮДИНА. «ПТАШИНИЙ GPS».
+Порівнюємо: птах → природні орієнтири (Сонце, зірки, ландшафт) і магнітне поле; людина → карта, компас, GPS.
+Питання: «Якби ви втратили GPS, як би знайшли дорогу додому?»
+ГРА: на підлозі велика сітка/карта. Одна дитина — «птах», інша — «Сонце», третя — «магнітне поле». «Сонце» і «магнітне поле» підказують напрямок (жестами або словами «південь», «схід»), а «птах» має дійти до потрібної точки (місця зимівлі).
+Це жива демонстрація навігації, а не доповідь.</template></section>
+<section class="slide slide-scene th-dark" id="slide-41" data-sky="midnight" data-title="00:00 Коли ми не бачимо" aria-roledescription="слайд" aria-label="41 з 45: 00:00 Коли ми не бачимо" hidden>
+<div class="sheet"><div class="scene"><img class="scene-img" src="img/scene-00.jpg" alt="Наше дерево і будиночок о 00:00">
+<div class="clock" data-s>00:00</div><div class="glass g-right g-top" data-s><h2>Коли ми не бачимо…</h2><p>Сова полює вночі. Природа не спить!</p></div><div class="scene-snd s-left s-top" data-s><button class="snd snd-night" data-src="media/owl.mp3" aria-label="Увімкнути звук: Сова" aria-pressed="false"><span class="snd-b"><svg fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"></path></svg></span><span class="snd-l">Сова</span></button></div><ol class="tl" aria-label="Час доби"><li class=""><span></span>06:00</li><li class=""><span></span>09:00</li><li class=""><span></span>12:00</li><li class=""><span></span>15:00</li><li class=""><span></span>18:00</li><li class=""><span></span>21:00</li><li class="on" aria-current="step"><span></span>00:00</li></ol></div></div>
+<template class="notes">00:00 — КОЛИ МИ НЕ БАЧИМО.
+У залі — повна темрява. На екрані — північ.
+ЗВУК: кнопка «Сова» — голос сови сірої (неяситі сірої), ≈30 с. Слухати 15 с, потім стоп. Сови сірі активні вночі й часто кричать саме восени.
+Питання: «Хто не спить уночі?»
+Звук: xeno-canto XC494801, Alvaro Ortiz Troncoso, CC BY-SA 4.0 (Wikimedia Commons).</template></section>
+<section class="slide  th-dark" id="slide-42" data-sky="midnight" data-title="Нічний мікросвіт" aria-roledescription="слайд" aria-label="42 з 45: Нічний мікросвіт" hidden>
+<div class="sheet"><h2 data-s>Нічний мікросвіт</h2><ul class="coll coll3"><li data-s><figure class="ph " style="--tilt:-2deg"><img src="img/web.jpg" alt="Крапля на павутині" loading="lazy"></figure><b>крапля</b></li><li data-s><figure class="ph " style="--tilt:1.5deg"><img src="img/mush.jpg" alt="Гриб білий у траві" loading="lazy"></figure><b>гриб</b></li><li data-s><figure class="ph " style="--tilt:-1deg"><img src="img/web2.jpg" alt="Павутина з росою серед трави" loading="lazy"></figure><b>павутина</b></li></ul>
+<blockquote class="quote q-dark" data-s>«Ми думали, що вночі природа засинає. А ми просто перестаємо її бачити»</blockquote>
+<p class="credit credit-d" data-s>Фото (Wikimedia Commons): Simone Bissi, CC BY-SA 4.0; Staszek99, CC BY-SA 4.0; Steve Hillebrand, USFWS, суспільне надбання</p></div>
+<template class="notes">НІЧНИЙ МІКРОСВІТ.
+За сценарієм — макрозйомка: крапля, гриб, павутина, поверхня листка, насіння. Якщо є власні макрофото/відео — покажіть їх; ці три фото — приклади з Wikimedia Commons.
+Уночі й під ранок на холодних поверхнях утворюється роса — краплі на павутинні. Гриби ростуть і вночі.
+Текст: «Ми думали, що вночі природа засинає. Але ми просто перестаємо її бачити».</template></section>
+<section class="slide  th-dark" id="slide-43" data-sky="midnight" data-title="24 HOURS" aria-roledescription="слайд" aria-label="43 з 45: 24 HOURS" hidden>
+<div class="sheet"><p class="h24" data-s>24 HOURS</p><ol class="chainx"><li data-s><span class="ic ic-water lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><path d="M192 512C86 512 0 426 0 320C0 228.8 130.2 57.7 166.6 11.7C172.6 4.2 181.5 0 191.1 0l1.8 0c9.6 0 18.5 4.2 24.5 11.7C253.8 57.7 384 228.8 384 320c0 106-86 192-192 192zM96 336c0-8.8-7.2-16-16-16s-16 7.2-16 16c0 61.9 50.1 112 112 112c8.8 0 16-7.2 16-16s-7.2-16-16-16c-44.2 0-80-35.8-80-80z"></path></svg></span><b>вода</b></li><li data-s><span class="ic ic-olive lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M383.9 23.46c-13.4 2.23-26.3 3-36.9 5.31-14.8 3.18-24.2 7.59-29.8 22.41-1.4 3.88-1 6 .4 8.61 1.4 2.62 4.5 5.52 8.5 7.8 4 2.29 8.8 3.93 12.9 4.62 4 .69 7.5 0 7.5 0h.1c17.9-8.16 30.2-27.83 37.3-48.75zm-72.7 55.78c-3.4 20.1-13.5 38.56-25.2 56.26-.4 2.2-.9 4.3-1.5 6.4-2.7 9.3-7.5 18.2-14.3 25.8l.1.1c7.7-5.9 15.5-9.5 23.2-11.3 14.3-20.2 28.8-42.7 34.4-68.52-3.7-1.19-7.3-2.76-10.8-4.75-2-1.17-4-2.5-5.9-3.99zm-85.7 8.61c-11.9-.1-25.5 2.26-40.4 6-23.5 5.89-49 14.75-73.5 19.95 18.2 16.8 32.3 34.5 47.2 46.4 18.9 15 37.8 22.4 73.6 11.2 18.3-5.7 30.6-19.7 34.8-34.5 4.3-14.8 1.1-29.8-12.3-40.42-7.6-6.01-17.6-8.53-29.4-8.63zm81.2 84.35c-8.7-.1-17.4 3-27.8 11.8-23.6 19.9-12.7 40.7-2.2 45.4h.1c2.4 1.1 8.6 1.5 16.5-.2 8-1.7 17.6-5.3 27.5-10.1 14.5-7 29.4-16.7 40.9-26.4-13.2-5-25.1-12.2-36.4-16.3-5.9-2.2-11.4-3.8-16.9-4.1-.6 0-1.2-.1-1.7-.1zM244.6 237c-48 .5-91.3 4.6-122.7 10.6-16.9 3.2-30.51 7.1-39.1 11-4.3 1.9-7.31 3.9-8.75 5.3-.52.5-.62.6-.76.8.14.2.24.3.76.8 1.44 1.4 4.45 3.4 8.75 5.3 8.59 3.9 22.2 7.8 39.1 11 33.9 6.5 81.5 10.6 134.1 10.6 52.6 0 100.2-4.1 134.1-10.6 16.9-3.2 30.5-7.1 39.1-11 4.3-1.9 7.3-3.9 8.8-5.3.5-.5.6-.6.7-.8-.1-.2-.2-.3-.7-.8-1.5-1.4-4.5-3.4-8.8-5.3-8.6-3.9-22.2-7.8-39.1-11-19.3-3.7-43.1-6.6-69.7-8.5-8 3.4-15.8 6.1-23.3 7.7-9.9 2.1-19.2 2.8-27.7-1-2.2-1-4.3-2.2-6.2-3.6.9 8.8 2 17.6 3.2 26.5l-17.8 2.6c-1.7-11.4-3.1-22.7-4-34.3zM80.33 289.3l7.89 39.4c10.2 8.7 32.98 17.4 61.98 23 30.7 5.8 68.3 8.8 105.8 8.8s75.1-3 105.8-8.8c29-5.6 51.8-14.3 62-23l7.9-39.4c-10.2 3.9-23.1 7.3-38.2 10.2-35.6 6.8-84 10.9-137.5 10.9s-101.9-4.1-137.5-10.9c-15.1-2.9-27.98-6.3-38.17-10.2zm44.57 75.2l11.7 93.4c6.5 8.1 21.9 16.5 42.7 21.9 22 5.7 49.3 8.7 76.7 8.7 27.4 0 54.7-3 76.7-8.7 20.8-5.4 36.2-13.8 42.7-21.9l11.7-93.4c-6.9 1.8-14.2 3.3-21.9 4.8-32.3 6.2-70.7 9.2-109.2 9.2s-76.9-3-109.2-9.2c-7.7-1.4-15-3-21.9-4.8z"></path></svg></span><b>рослина</b></li><li data-s><span class="ic ic-terra lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M272 96c-78.6 0-145.1 51.5-167.7 122.5c33.6-17 71.5-26.5 111.7-26.5l88 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-16 0-72 0s0 0 0 0c-16.6 0-32.7 1.9-48.3 5.4c-25.9 5.9-49.9 16.4-71.4 30.7c0 0 0 0 0 0C38.3 298.8 0 364.9 0 440l0 16c0 13.3 10.7 24 24 24s24-10.7 24-24l0-16c0-48.7 20.7-92.5 53.8-123.2C121.6 392.3 190.3 448 272 448l1 0c132.1-.7 239-130.9 239-291.4c0-42.6-7.5-83.1-21.1-119.6c-2.6-6.9-12.7-6.6-16.2-.1C455.9 72.1 418.7 96 376 96L272 96z"></path></svg></span><b>листок</b></li><li data-s><span class="ic ic-plum lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M288 32c0 17.7 14.3 32 32 32l32 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128c-17.7 0-32 14.3-32 32s14.3 32 32 32l320 0c53 0 96-43 96-96s-43-96-96-96L320 0c-17.7 0-32 14.3-32 32zm64 352c0 17.7 14.3 32 32 32l32 0c53 0 96-43 96-96s-43-96-96-96L32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0c-17.7 0-32 14.3-32 32zM128 512l32 0c53 0 96-43 96-96s-43-96-96-96L32 320c-17.7 0-32 14.3-32 32s14.3 32 32 32l128 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0c-17.7 0-32 14.3-32 32s14.3 32 32 32z"></path></svg></span><b>повітря</b></li><li data-s><span class="ic ic-bordo lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M160.8 96.5c14 17 31 30.9 49.5 42.2c25.9 15.8 53.7 25.9 77.7 31.6l0-31.5C265.8 108.5 250 71.5 248.6 28c-.4-11.3-7.5-21.5-18.4-24.4c-7.6-2-15.8-.2-21 5.8c-13.3 15.4-32.7 44.6-48.4 87.2zM320 144l0 30.6s0 0 0 0l0 1.3s0 0 0 0l0 32.1c-60.8-5.1-185-43.8-219.3-157.2C97.4 40 87.9 32 76.6 32c-7.9 0-15.3 3.9-18.8 11C46.8 65.9 32 112.1 32 176c0 116.9 80.1 180.5 118.4 202.8L11.8 416.6C6.7 418 2.6 421.8 .9 426.8s-.8 10.6 2.3 14.8C21.7 466.2 77.3 512 160 512c3.6 0 7.2-1.2 10-3.5L245.6 448l74.4 0c88.4 0 160-71.6 160-160l0-160 29.9-44.9c1.3-2 2.1-4.4 2.1-6.8c0-6.8-5.5-12.3-12.3-12.3L400 64c-44.2 0-80 35.8-80 80zm80-16a16 16 0 1 1 0 32 16 16 0 1 1 0-32z"></path></svg></span><b>птах</b></li><li data-s><span class="ic ic-amber lg" aria-hidden="true"><svg fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M560 160A80 80 0 1 0 560 0a80 80 0 1 0 0 160zM55.9 512l325.2 0 75 0 122.8 0c33.8 0 61.1-27.4 61.1-61.1c0-11.2-3.1-22.2-8.9-31.8l-132-216.3C495 196.1 487.8 192 480 192s-15 4.1-19.1 10.7l-48.2 79L286.8 81c-6.6-10.6-18.3-17-30.8-17s-24.1 6.4-30.8 17L8.6 426.4C3 435.3 0 445.6 0 456.1C0 487 25 512 55.9 512z"></path></svg></span><b>екосистема</b></li></ol>
+<p class="lead lead-dark lead-c" data-s>Ми прийшли досліджувати листок… а знайшли воду, повітря, світло і тварин</p></div>
+<template class="notes">ФІНАЛ — «24 HOURS».
+На екрані з’являється «24 HOURS». Усі дитячі дослідження з’єднуються: вода → рослина → листок → повітря → птах → екосистема.
+Центральне дерево «оживає» (за можливості — проекція на дерево; діти чіпляють листки).
+Діти по черзі:
+«Ми прийшли досліджувати листок».
+«А знайшли воду».
+«Повітря».
+«Світло».
+«Тварин».
+«І зрозуміли, що жоден із них не існує окремо».</template></section>
+<section class="slide slide-fin th-dark" id="slide-44" data-sky="sunrise" data-title="Усе пов’язано" aria-roledescription="слайд" aria-label="44 з 45: Усе пов’язано" hidden>
+<div class="sheet"><div class="fin"><p class="fin1" data-s>ПРИРОДА НЕ ЖИВЕ ПО УРОКАХ.</p><p class="fin2" data-s>УСЕ ПОВ’ЯЗАНО.</p>
+<div class="fin-ic" data-s><svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M267.375 14.688c-17.09 6.94-30.576 17.288-38.75 29.593l-14.813-27.593c-9.017 49.344-12.52 95.085 32 109.563-10.734 36.94-17.187 73.9-20.687 110.813l-20.563-38.344c-2.848-14.713-9.618-30.698-17.343-47l-17.376 74.124c-7.214-22.468-16.496-44.677-28.47-66.47 24.46-43.217 16.134-70.568-31.093-79.28-.515 3.04-.56 9.344-.56 9.344l-19.876-8.75L87.5 100.53l-9.344-4.655c-5.433 42.254-.12 74.946 46.625 72.094 3.705 6.717 7.128 13.47 10.314 20.28L29.22 156.312c31.263 45.247 64.173 82.76 112.53 47.094 10.985 26.656 18.485 53.944 23.75 81.72l-64.78-40.188c12.872 36.068 28.203 67.286 66.936 52.437 1.237 7.446 2.306 14.926 3.28 22.438h18.876c-2.757-21.95-6.533-43.82-11.906-65.5 8.208-4.095 14.35-8.853 18.75-14.188 3.693 11.197 11.61 19.643 26.438 23.594-1.097 18.71-1.506 37.414-1.438 56.092h18.688c-.014-4.07-.003-8.12.03-12.187 41.888-6.813 39.48-42.478 32.407-81.188l-31.967 59.625c.765-23.7 2.492-47.326 5.593-70.906 52.515 5.043 61.144-38.783 65.125-87.78l-61.81 65.843c3.47-20.563 8.06-41.09 14-61.564 37.544 4.596 76.884-35.765 75.28-70l-12.438 7.72c-1.053-11.96-6.674-25.51-17.125-40.69-7.535 5.354-14.003 12.573-19.843 20.44L285.5 31.03l-11.688 14.595c-.32-10.47-2.17-20.77-6.437-30.938zm182.22 99.25c-4.994.008-10.98.86-18.25 2.906-13.336 3.754-27.52 12.25-22.376 37.625-24.488 13.127-45.408 31.122-62.25 53.155h-.19c.03.045.067.08.095.125-.8 1.05-1.593 2.09-2.375 3.156l23.063-76.344c-45.938 31.743-83.94 65.165-45.438 114.75-9.69 21.296-16.536 44.94-20.313 70.5h38.032c24.53-7.376 29.6-36.436 32.187-68.25l-48.155 51.282c6.766-30.55 18.424-57.235 34.406-79.47 36.727 42.145 77.18 14.898 118.033-19.81l-104.594 3.28c13.094-14.284 28.35-26.198 45.56-35.5 11.388 14.74 28.402 14.172 40.595 7.812 25.338-13.216 17.442-27.84 38.28-45.906-20.892 5.264-19.352-19.358-46.31-19.313zM152.936 338.5l26.032 154.594h143.593L348.969 338.5H152.936z"></path></svg></div><p class="fin3" data-s>А що буде далі?</p></div></div>
+<template class="notes">ФІНАЛЬНА ФРАЗА: «ПРИРОДА НЕ ЖИВЕ ПО УРОКАХ. УСЕ ПОВ’ЯЗАНО».
+Пауза.
+Дитина виходить із маленьким горщиком із насінням: «Ми досліджували одну осінню добу. А тепер хочемо перевірити, що буде далі».
+Дітям можна роздати насіння для спільного шкільного довготривалого експерименту. Конференція продовжується після заходу.</template></section>
+<section class="slide  th-light" id="slide-45" data-sky="paper" data-title="Джерела фото, звуків і даних" aria-roledescription="слайд" aria-label="45 з 45: Джерела фото, звуків і даних" hidden>
+<div class="sheet"><h2 data-s>Джерела фото, звуків і даних</h2><ul class="credits" data-s><li>Фото та відео дослідів — учасники конференції. Малюнки «доба», схеми і карти — створено для цієї презентації.</li><li>Погода: Open-Meteo (api.open-meteo.com), Одеса, отримано 19.10.2026 — архівні модельні дані та прогноз.</li><li>Карта: Natural Earth / world-atlas (суспільне надбання). Маршрути: Wikipedia «White stork», «Common crane»; Underhill &amp; Remisiewicz, Birds 2025, 6(3):48; Гріщенко В.Н., «Беркут» 16(2), 2007.</li><li>Фото (Wikimedia Commons): лелека — Andreas Trepte, CC BY-SA 2.5; ластівка, синиця — Charles J. Sharp, CC BY-SA 4.0; журавель — Andreas Trepte, CC BY-SA 2.5; роса — Kumar Rohan, CC BY-SA 4.0; конденсат — Mia Primavera, CC0; крапля на павутині — Simone Bissi, CC BY-SA 4.0; гриб — Staszek99, CC BY-SA 4.0; павутина — Steve Hillebrand, USFWS, суспільне надбання.</li><li>Звуки (Wikimedia Commons): дощ — ezwa (суспільне надбання) і Gravity Sound (CC BY 4.0); шелест, хрускіт листя, вітер — Gravity Sound, CC BY 4.0; вільшанка — Dan Stowell, CC BY-SA 4.0; синиця — Vladimir Arkhipov, CC BY-SA 3.0; журавель — Владислав Волков, CC0; лелека — felix.blume, CC BY-SA 3.0; ластівка — Jonathon Jongsma, CC BY-SA 3.0; сова — Alvaro Ortiz Troncoso, CC BY-SA 4.0.</li></ul></div>
+<template class="notes">Слайд для педагогів: усі сторонні матеріали мають вільні ліцензії; цей слайд виконує вимогу зазначати авторів. Дітям його показувати не обов’язково.</template></section>
+</main>
+
+<button class="zone zone-l" id="zl" aria-label="Попередній слайд" tabindex="-1"></button>
+<button class="zone zone-r" id="zr" aria-label="Наступний слайд" tabindex="-1"></button>
+
+<nav class="bar" aria-label="Навігація слайдами">
+  <div class="prog" aria-hidden="true"><i id="prog"></i></div>
+  <button id="prev" aria-label="Попередній слайд (стрілка вліво)">&#9664;</button>
+  <span class="num" id="num">1 / 45</span>
+  <button id="next" aria-label="Наступний слайд (стрілка вправо або пробіл)">&#9654;</button>
+  <span class="ttl" id="ttl"></span>
+  <button id="ovb" aria-label="Огляд усіх слайдів (клавіша O)"><span class="lbl">Огляд</span> <kbd>O</kbd></button>
+  <button id="ntb" aria-label="Нотатки доповідача (клавіша N)" aria-expanded="false"><span class="lbl">Нотатки</span> <kbd>N</kbd></button>
+</nav>
+
+<div class="ov" id="ov" role="dialog" aria-modal="true" aria-label="Огляд усіх слайдів">
+  <h2>Усі слайди</h2>
+  <ol id="ovl"></ol>
+</div>
+<aside class="notes-p" id="notes" aria-label="Нотатки доповідача"></aside>
+<div class="help" id="help">← → пробіл — гортати · O — огляд · N — нотатки · Esc — закрити</div>
+
+<script>
+(function(){
+const slides=[...document.querySelectorAll('.slide')];
+const N=slides.length; let cur=-1;
+const body=document.body, deck=document.getElementById('deck');
+const SKY={
+ black:['#000000','#000000','#050505',50,40,0,0],
+ sunset:['#3B2141','#93413A','#C98A3D',72,58,1,0],
+ dawn:['#1F2B4D','#5C4C6E','#B9725A',14,74,.9,0],
+ morning:['#4F86B8','#86AFCB','#C9B48A',18,30,1,0],
+ noon:['#2F6FA8','#6E9EC3','#C7B07D',52,9,1,0],
+ afternoon:['#3F78A8','#8BAFC0','#C7A06A',76,20,1,0],
+ cold:['#0B2440','#1B4C74','#4F7FA3',80,24,.35,0],
+ dusk:['#2E2A5A','#7A3E52','#C46A3E',86,62,1,0],
+ night:['#0E1630','#1E2A52','#353A63',78,14,1,1],
+ midnight:['#05070F','#0E1428','#1A2140',50,10,1,1],
+ sunrise:['#4A1520','#8E3A2A','#C67E2E',50,70,1,0],
+ paper:['#4A2A2A','#7A4A38','#A8784E',85,15,.6,0]
+};
+// дерева: силуети крон
+function crowns(seed,h,count){let d='M0 300 ';let x=0;let r=seed;function rnd(){r=(r*9301+49297)%233280;return r/233280}
+ while(x<3000){const w=60+rnd()*110;const top=h*(0.35+rnd()*0.5);
+  d+=`L${x} ${300-top*0.35} Q${x+w*0.1} ${300-top} ${x+w*0.5} ${300-top-rnd()*20} Q${x+w*0.9} ${300-top} ${x+w} ${300-top*0.35} `; x+=w*0.85;}
+ return d+'L3000 300 Z';}
+document.getElementById('tf').setAttribute('d',crowns(7,260));
+document.getElementById('tn').setAttribute('d',crowns(31,300));
+// листя
+const SH={
+ maple:'<svg viewBox="0 0 100 100"><path d="M50 4 58 26 76 16 70 38 94 36 78 52 90 62 66 64 70 84 54 72 50 96 46 72 30 84 34 64 10 62 22 52 6 36 30 38 24 16 42 26Z"/></svg>',
+ oak:'<svg viewBox="0 0 100 100"><path d="M50 4 Q62 10 58 20 Q72 16 70 30 Q84 32 74 44 Q86 52 74 60 Q82 72 66 72 Q66 86 54 84 L52 96 L48 96 L46 84 Q34 86 34 72 Q18 72 26 60 Q14 52 26 44 Q16 32 30 30 Q28 16 42 20 Q38 10 50 4Z"/></svg>',
+ birch:'<svg viewBox="0 0 100 100"><path d="M50 4C70 18 84 40 80 62 76 80 62 90 50 96 38 90 24 80 20 62 16 40 30 18 50 4Z"/><path d="M50 10V96" stroke="rgba(0,0,0,.25)" stroke-width="3" fill="none"/></svg>'
+};
+const LC=['#C9822B','#B4502C','#E3A13A','#8E2E2A','#9A7A2A'];
+const lv=document.querySelector('.leaves');
+const kinds=Object.keys(SH);
+for(let i=0;i<16;i++){const el=document.createElement('div');el.className='leaf';
+ const k=kinds[i%3];el.innerHTML=SH[k];el.querySelector('svg').style.fill=LC[i%LC.length];
+ el.style.left=(Math.random()*100)+'vw';el.style.setProperty('--w',(22+Math.random()*26)+'px');
+ el.style.setProperty('--d',(18+Math.random()*16)+'s');el.style.setProperty('--dl',(-Math.random()*30)+'s');
+ el.style.setProperty('--dx',(Math.random()*16-4)+'vw');el.style.setProperty('--sd',(3+Math.random()*3)+'s');
+ el.style.setProperty('--op',(0.28+Math.random()*0.22).toFixed(2));el.style.setProperty('--r',(Math.random()*500-250)+'deg');
+ lv.appendChild(el);}
+// стаггер
+slides.forEach(s=>s.querySelectorAll('[data-s]').forEach((e,i)=>e.style.setProperty('--i',i)));
+// графіки
+const NS='http://www.w3.org/2000/svg';
+const COL={amber:'#D9921F',water:'#1F5C9E'};
+function el(t,a,txt){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;return e}
+document.querySelectorAll('.chart').forEach(f=>{
+ const labels=f.dataset.labels.split(','), vals=f.dataset.values.split(',').map(v=>v===''?null:+v);
+ const fmt=v=>v.toFixed(1).replace('.',',')+'°';
+ if(f.dataset.chart==='bar'){
+  const W=640,H=430,L=52,R=10,T=60,B=50,max=16;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':f.dataset.title+': '+labels.map((l,i)=>l+' — '+fmt(vals[i])).join(', ')});
+  svg.appendChild(el('text',{x:W/2,y:28,'text-anchor':'middle',class:'t'},f.dataset.title));
+  const y=v=>T+(H-T-B)*(1-v/max);
+  [0,5,10,15].forEach(t=>{svg.appendChild(el('line',{x1:L,x2:W-R,y1:y(t),y2:y(t),class:'grid'}));svg.appendChild(el('text',{x:L-8,y:y(t)+6,'text-anchor':'end',class:'tick'},t+'°'))});
+  const bw=(W-L-R)/labels.length;
+  labels.forEach((l,i)=>{const x=L+i*bw+bw*0.18,w=bw*0.64,v=vals[i];
+   const r=el('rect',{x,y:y(v),width:w,height:y(0)-y(v),rx:6,fill:COL[f.dataset.color],class:'bx'});r.style.setProperty('--k',i);svg.appendChild(r);
+   const t=el('text',{x:x+w/2,y:y(v)-10,'text-anchor':'middle',class:'val'},fmt(v));t.style.setProperty('--k',i);svg.appendChild(t);
+   svg.appendChild(el('text',{x:x+w/2,y:H-B+30,'text-anchor':'middle',class:'lab'},l));});
+  svg.appendChild(el('line',{x1:L,x2:W-R,y1:y(0),y2:y(0),class:'axis'}));
+  f.appendChild(svg);
+ } else {
+  const W=900,H=530,L=64,R=24,T=44,B=84,max=22;
+  const hot=+f.dataset.hot,cold=+f.dataset.cold;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'Найвища температура дня, 10–22 жовтня: '+labels.map((l,i)=>l+' — '+(vals[i]==null?'ще не настало':fmt(vals[i]))).join(', ')});
+  const y=v=>T+(H-T-B)*(1-v/max), step=(W-L-R-40)/(labels.length-1), x=i=>L+30+i*step;
+  [0,5,10,15,20].forEach(t=>{svg.appendChild(el('line',{x1:L,x2:W-R,y1:y(t),y2:y(t),class:'grid'}));svg.appendChild(el('text',{x:L-10,y:y(t)+6,'text-anchor':'end',class:'tick'},t+'°'))});
+  svg.appendChild(el('line',{x1:L,x2:W-R,y1:y(0),y2:y(0),class:'axis'}));
+  labels.forEach((l,i)=>svg.appendChild(el('text',{x:x(i),y:y(0)+30,'text-anchor':'middle',class:'lab'},l)));
+  svg.appendChild(el('text',{x:(L+W-R)/2,y:H-8,'text-anchor':'middle',class:'tick'},'жовтень'));
+  const pts=vals.map((v,i)=>v==null?null:[x(i),y(v)]).filter(Boolean);
+  const d='M'+pts.map(p=>p.join(' ')).join(' L');
+  const path=el('path',{d,fill:'none',stroke:'#D9622B','stroke-width':6,'stroke-linecap':'round','stroke-linejoin':'round',class:'ln'});
+  svg.appendChild(path);
+  vals.forEach((v,i)=>{if(v==null){svg.appendChild(el('circle',{cx:x(i),cy:y(0)-14,r:5,fill:'none',stroke:'#B9A48C','stroke-width':2,'stroke-dasharray':'3 3'}));return}
+   const c=i===hot?'#B3361E':i===cold?'#1F5C9E':'#D9622B',r=(i===hot||i===cold)?13:8;
+   const p=el('circle',{cx:x(i),cy:y(v),r,fill:c,stroke:'#fff','stroke-width':3,class:'pt'});p.style.setProperty('--k',i);svg.appendChild(p);
+   const t=el('text',{x:x(i),y:y(v)-(r+10),'text-anchor':'middle',class:'val'},fmt(v));t.style.setProperty('--k',i);if(i===hot)t.setAttribute('fill','#B3361E');if(i===cold){t.setAttribute('fill','#1F5C9E');t.setAttribute('y',y(v)+r+28)}svg.appendChild(t)});
+  f.appendChild(svg);
+  requestAnimationFrame(()=>{try{path.style.setProperty('--len',Math.ceil(path.getTotalLength()))}catch(e){path.style.setProperty('--len',2000)}});
+ }
+});
+// звук
+const audio=new Audio(); let btn=null;
+function stopSound(){audio.pause();audio.currentTime=0;if(btn)btn.setAttribute('aria-pressed','false');btn=null}
+audio.addEventListener('ended',stopSound);
+document.addEventListener('click',e=>{const b=e.target.closest('.snd');if(!b)return;e.stopPropagation();
+ if(btn===b){stopSound();return}stopSound();btn=b;audio.src=b.dataset.src;audio.play().catch(()=>{});b.setAttribute('aria-pressed','true')});
+// навігація
+const prog=document.getElementById('prog'),num=document.getElementById('num'),ttl=document.getElementById('ttl'),notes=document.getElementById('notes'),ov=document.getElementById('ov');
+const orb=document.querySelector('.orb'), tf=document.querySelector('.trees .far'), tn=document.querySelector('.trees .near');
+function go(i,dir){i=Math.max(0,Math.min(N-1,i));if(i===cur)return;const old=slides[cur];
+ dir=dir||(i>cur?1:-1);
+ stopSound();document.querySelectorAll('video').forEach(v=>v.pause());
+ if(old){old.style.setProperty('--to',(-60*dir)+'px');old.classList.remove('is-active');old.classList.add('is-leaving');old.setAttribute('aria-hidden','true');old.inert=true;setTimeout(()=>old.classList.remove('is-leaving'),900)}
+ const s=slides[i];s.hidden=false;s.style.setProperty('--from',(60*dir)+'px');s.removeAttribute('aria-hidden');s.inert=false;
+ void s.offsetWidth;s.classList.add('is-active');s.scrollTop=0;
+ cur=i;const sk=SKY[s.dataset.sky]||SKY.sunset;
+ const r=document.documentElement.style;r.setProperty('--s1',sk[0]);r.setProperty('--s2',sk[1]);r.setProperty('--s3',sk[2]);
+ body.dataset.sky=s.dataset.sky;
+ orb.style.setProperty('--ox',sk[3]+'%');orb.style.setProperty('--oy',sk[4]+'%');orb.style.setProperty('--oo',sk[5]);orb.classList.toggle('moon',!!sk[6]);
+ tf.style.transform=`translateX(${-(i%15)*1.2}vw)`;tn.style.transform=`translateX(${-(i%15)*3}vw)`;
+ prog.style.setProperty('--p',((i+1)/N*100)+'%');num.textContent=(i+1)+' / '+N;ttl.textContent=s.dataset.title;
+ document.title=s.dataset.title+' — 24 години всередині осені';
+ if(location.hash!=='#slide-'+(i+1))history.replaceState(null,'','#slide-'+(i+1));
+ renderNotes();
+ ov.querySelectorAll('a').forEach((a,k)=>a.classList.toggle('cur',k===i));
+}
+function renderNotes(){const s=slides[cur];notes.innerHTML='';const h=document.createElement('h3');h.textContent='Нотатки · слайд '+(cur+1);notes.appendChild(h);
+ notes.appendChild(document.createTextNode(s.querySelector('template.notes').innerHTML.replace(/&quot;/g,'"').replace(/&#x27;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&')))}
+const next=()=>go(cur+1,1),prev=()=>go(cur-1,-1);
+slides.forEach(s=>{s.setAttribute('aria-hidden','true');s.inert=true;s.hidden=false});
+// огляд
+const ovl=document.getElementById('ovl');
+slides.forEach((s,i)=>{const li=document.createElement('li');const a=document.createElement('a');a.href='#slide-'+(i+1);
+ const sk=SKY[s.dataset.sky]||SKY.sunset;const th=document.createElement('div');th.className='th';th.style.setProperty('--a',sk[0]);th.style.setProperty('--b',sk[2]);
+ const im=s.querySelector('.scene-img, .ph img, .seeds img, .birds img, .day7 img');
+ if(im){const c=document.createElement('img');c.src=im.getAttribute('src');c.alt='';c.loading='lazy';th.appendChild(c)}else{const sp=document.createElement('span');sp.textContent=i+1;th.appendChild(sp)}
+ const b=document.createElement('b');b.textContent=s.dataset.title;const sm=document.createElement('small');sm.textContent='Слайд '+(i+1);
+ a.append(th,sm,b);a.addEventListener('click',e=>{e.preventDefault();closeAll();go(i)});li.appendChild(a);ovl.appendChild(li)});
+function toggleOv(){const o=ov.classList.toggle('open');if(o){const c=ov.querySelector('a.cur')||ov.querySelector('a');c&&c.focus();c&&c.scrollIntoView({block:'center'})}}
+function toggleNotes(){const o=notes.classList.toggle('open');document.getElementById('ntb').setAttribute('aria-expanded',o)}
+function closeAll(){ov.classList.remove('open');notes.classList.remove('open');document.getElementById('ntb').setAttribute('aria-expanded','false')}
+document.getElementById('next').onclick=next;document.getElementById('prev').onclick=prev;
+document.getElementById('zl').onclick=prev;document.getElementById('zr').onclick=next;
+document.getElementById('ovb').onclick=toggleOv;document.getElementById('ntb').onclick=toggleNotes;
+document.addEventListener('keydown',e=>{
+ if(e.target.closest&&e.target.closest('video'))return;
+ const k=e.key;
+ if(k==='Escape'){closeAll();return}
+ if(ov.classList.contains('open')){if(k==='o'||k==='O'||k==='щ'||k==='Щ'){toggleOv()}return}
+ if(k==='ArrowRight'||k==='PageDown'||(k===' '&&!e.target.closest('button'))){e.preventDefault();next()}
+ else if(k==='ArrowLeft'||k==='PageUp'){e.preventDefault();prev()}
+ else if(k==='Home'){go(0)}else if(k==='End'){go(N-1)}
+ else if(k==='o'||k==='O'||k==='щ'||k==='Щ'){toggleOv()}
+ else if(k==='n'||k==='N'||k==='т'||k==='Т'){toggleNotes()}
+});
+let tx=0,ty=0;
+deck.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+deck.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.4){dx<0?next():prev()}},{passive:true});
+function fromHash(){const m=location.hash.match(/slide-(\d+)/);return m?Math.max(0,Math.min(N-1,+m[1]-1)):0}
+window.addEventListener('hashchange',()=>go(fromHash()));
+go(fromHash(),1);
+const help=document.getElementById('help');if(!matchMedia('(max-width:900px)').matches){help.classList.add('show');setTimeout(()=>help.classList.remove('show'),4500)}
+})();
+</script>
+</body>
+</html>
